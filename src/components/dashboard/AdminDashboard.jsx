@@ -23,7 +23,10 @@ import {
   Award,
   Sparkles,
   Percent,
-  FileText
+  MessageSquare,
+  HelpCircle,
+  Star,
+  ThumbsUp
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -32,6 +35,9 @@ export const AdminDashboard = () => {
     adminLogout,
     bookings,
     updateBookingStatus,
+    enquiries,
+    updateEnquiryStatus,
+    deleteEnquiry,
     services,
     addService,
     updateService,
@@ -45,6 +51,12 @@ export const AdminDashboard = () => {
     portfolio,
     addPortfolioItem,
     deletePortfolioItem,
+    testimonials,
+    setTestimonials,
+    faqs,
+    setFaqs,
+    whyChoose,
+    setWhyChoose,
     stats,
     setStats,
     salonInfo,
@@ -60,24 +72,27 @@ export const AdminDashboard = () => {
 
   const [activeAdminTab, setActiveAdminTab] = useState('overview');
 
-  // New Service Form State
+  // Forms State
   const [newService, setNewService] = useState({
     name: '', category: 'Bridal Makeup', price: '', duration: '1 Hour', description: ''
   });
 
-  // New Package Form State
   const [newPackage, setNewPackage] = useState({
     name: '', price: '', originalPrice: '', description: '', inclusionsText: ''
   });
 
-  // New Offer Form State
   const [newOffer, setNewOffer] = useState({
     title: '', category: 'Bridal', regularPrice: '', offerPrice: '', code: '', validTill: '', description: ''
   });
 
-  // New Portfolio Form State
   const [newPortfolio, setNewPortfolio] = useState({
     title: '', category: 'Bridal', type: 'Bridal HD Makeup', image: '', description: ''
+  });
+
+  const [newFaq, setNewFaq] = useState({ question: '', answer: '' });
+
+  const [newTestimonial, setNewTestimonial] = useState({
+    name: '', rating: 5, role: 'Bridal Makeup Client', review: '', serviceBooked: 'Bridal HD Makeup'
   });
 
   // Slot Locker Form State
@@ -85,7 +100,6 @@ export const AdminDashboard = () => {
   const [blockTimeSlot, setBlockTimeSlot] = useState('All Day');
   const [blockReason, setBlockReason] = useState('Private VIP Booking');
 
-  // If unauthenticated, show protected Admin Login Page
   if (!isAdminAuthenticated) {
     return <AdminLoginModal />;
   }
@@ -104,7 +118,7 @@ export const AdminDashboard = () => {
       ...newService,
       price: parseInt(newService.price),
       isStartingFrom: false,
-      inclusions: ["Skin Preparation", "Sanitized Kit Application"]
+      inclusions: ["Skin preparation", "Sanitized application"]
     });
 
     setNewService({ name: '', category: 'Bridal Makeup', price: '', duration: '1 Hour', description: '' });
@@ -156,6 +170,37 @@ export const AdminDashboard = () => {
     setNewPortfolio({ title: '', category: 'Bridal', type: 'Bridal HD Makeup', image: '', description: '' });
   };
 
+  const handleAddFaqSubmit = (e) => {
+    e.preventDefault();
+    if (!newFaq.question || !newFaq.answer) return;
+
+    const updated = [...faqs, { id: `faq-${Date.now()}`, ...newFaq }];
+    setFaqs(updated);
+    setNewFaq({ question: '', answer: '' });
+  };
+
+  const handleDeleteFaq = (id) => {
+    setFaqs(faqs.filter(f => f.id !== id));
+  };
+
+  const handleAddTestimonialSubmit = (e) => {
+    e.preventDefault();
+    if (!newTestimonial.name || !newTestimonial.review) return;
+
+    const updated = [...testimonials, {
+      id: `t-${Date.now()}`,
+      ...newTestimonial,
+      date: new Date().toISOString().split('T')[0],
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
+    }];
+    setTestimonials(updated);
+    setNewTestimonial({ name: '', rating: 5, role: 'Bridal Makeup Client', review: '', serviceBooked: 'Bridal HD Makeup' });
+  };
+
+  const handleDeleteTestimonial = (id) => {
+    setTestimonials(testimonials.filter(t => t.id !== id));
+  };
+
   const handleBlockSlotSubmit = (e) => {
     e.preventDefault();
     addBlockedSlot({ date: blockDate, timeSlot: blockTimeSlot, reason: blockReason });
@@ -171,8 +216,8 @@ export const AdminDashboard = () => {
               A
             </div>
             <div>
-              <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}>Aura CMS & Business Control Panel</h3>
-              <span style={{ fontSize: '0.8rem', color: 'var(--primary-rose)' }}>Authenticated Admin: <strong>Makeup (Ananya Sharma)</strong></span>
+              <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}>Aura Business & Content Management System</h3>
+              <span style={{ fontSize: '0.8rem', color: 'var(--primary-rose)' }}>Authenticated Lead Artist: <strong>Ananya Sharma</strong></span>
             </div>
           </div>
 
@@ -184,9 +229,9 @@ export const AdminDashboard = () => {
         {/* Analytics Counter Row */}
         <div className="grid-4" style={{ marginBottom: '2.5rem' }}>
           <div className="glass-card" style={{ padding: '1.5rem', borderColor: 'var(--border-gold)' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Total Revenue</span>
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Total Business Revenue</span>
             <div style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--primary-gold)' }}>{formatPrice(totalRevenue)}</div>
-            <span style={{ fontSize: '0.75rem', color: '#2ecc71' }}>Confirmed Bookings</span>
+            <span style={{ fontSize: '0.75rem', color: '#2ecc71' }}>Confirmed Appointments</span>
           </div>
 
           <div className="glass-card" style={{ padding: '1.5rem', borderColor: 'var(--border-rose)' }}>
@@ -202,9 +247,9 @@ export const AdminDashboard = () => {
           </div>
 
           <div className="glass-card" style={{ padding: '1.5rem' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Active Content Items</span>
-            <div style={{ fontSize: '2rem', fontWeight: '800', color: '#2ecc71' }}>{services.length + packages.length + offers.length}</div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Services, Packages & Deals</span>
+            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Pending Customer Enquiries</span>
+            <div style={{ fontSize: '2rem', fontWeight: '800', color: '#2ecc71' }}>{(enquiries || []).filter(e => e.status === 'Pending').length}</div>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Quotes & Inquiries</span>
           </div>
         </div>
 
@@ -212,6 +257,7 @@ export const AdminDashboard = () => {
         <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.8rem', marginBottom: '2.5rem', overflowX: 'auto' }}>
           {[
             { id: 'overview', label: 'All Bookings Manager', icon: LayoutDashboard },
+            { id: 'enquiries', label: 'Customer Enquiries', icon: MessageSquare },
             { id: 'calendar', label: 'Slot Locker & Calendar', icon: Lock },
             { id: 'business', label: 'Hero & Business Info CMS', icon: Globe },
             { id: 'pricing', label: 'Services & Prices CRUD', icon: DollarSign },
@@ -219,6 +265,9 @@ export const AdminDashboard = () => {
             { id: 'custom-calc', label: 'Build Package Config', icon: Percent },
             { id: 'offers', label: 'Discount Offers', icon: Sparkles },
             { id: 'portfolio-cms', label: 'Portfolio CMS', icon: Image },
+            { id: 'why', label: 'Why Choose AURA', icon: ThumbsUp },
+            { id: 'testimonials', label: 'Testimonials Manager', icon: Star },
+            { id: 'faqs', label: 'FAQ Manager', icon: HelpCircle },
             { id: 'settings', label: 'About, Stats & Policies', icon: Settings }
           ].map(tab => {
             const Icon = tab.icon;
@@ -248,7 +297,7 @@ export const AdminDashboard = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
                       <span className="badge badge-gold">#{b.id}</span>
                       <span className={`badge ${b.status === 'Cancelled' ? 'badge-red' : 'badge-green'}`}>{b.status}</span>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Type: {b.type}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Type: {b.type === 'home' ? 'Home Service' : 'Salon Appointment'}</span>
                     </div>
                     <h4 style={{ fontSize: '1.15rem', color: 'var(--text-primary)' }}>{b.customerName} — {b.serviceName}</h4>
                     <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
@@ -285,7 +334,51 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* TAB 2: SLOT LOCKER & CALENDAR */}
+        {/* TAB 2: CUSTOMER ENQUIRIES */}
+        {activeAdminTab === 'enquiries' && (
+          <div>
+            <h3 style={{ fontSize: '1.4rem', marginBottom: '1.25rem' }}>Customer Inquiries & Custom Quotes ({(enquiries || []).length})</h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {(enquiries || []).map(enq => (
+                <div key={enq.id} className="glass-card" style={{ padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                      <span className={`badge ${enq.status === 'Replied' ? 'badge-green' : 'badge-gold'}`}>{enq.status}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Submitted: {enq.dateSubmitted}</span>
+                    </div>
+
+                    <h4 style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}>{enq.name} — <span style={{ color: 'var(--primary-gold)' }}>{enq.service}</span></h4>
+                    <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+                      Target Date: <strong>{enq.eventDate || 'N/A'}</strong> | Location: <strong>{enq.location || 'Not Specified'}</strong> | Phone: <a href={`tel:${enq.phone}`} style={{ color: 'var(--primary-gold)' }}>{enq.phone}</a> | Email: {enq.email}
+                    </div>
+
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.8rem 1rem', borderRadius: '8px', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                      "{enq.message}"
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    {enq.status !== 'Replied' ? (
+                      <button onClick={() => updateEnquiryStatus(enq.id, 'Replied')} className="btn btn-gold btn-sm">
+                        Mark Replied
+                      </button>
+                    ) : (
+                      <button onClick={() => updateEnquiryStatus(enq.id, 'Pending')} className="btn btn-outline-white btn-sm">
+                        Mark Pending
+                      </button>
+                    )}
+                    <button onClick={() => deleteEnquiry(enq.id)} className="btn btn-outline-white btn-sm" style={{ color: '#e74c3c' }}>
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: SLOT LOCKER & CALENDAR */}
         {activeAdminTab === 'calendar' && (
           <div className="grid-2" style={{ gap: '3rem', alignItems: 'flex-start' }}>
             <div className="glass-card" style={{ padding: '2rem' }}>
@@ -361,7 +454,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* TAB 3: HERO & BUSINESS INFO CMS */}
+        {/* TAB 4: HERO & BUSINESS INFO CMS */}
         {activeAdminTab === 'business' && (
           <div className="glass-card" style={{ padding: '2rem' }}>
             <h3 style={{ fontSize: '1.4rem', marginBottom: '1.25rem', color: 'var(--text-primary)' }}>Homepage Hero & General Business Information CMS</h3>
@@ -393,7 +486,17 @@ export const AdminDashboard = () => {
                   type="text"
                   className="form-control"
                   value={salonInfo.tagline}
-                  onChange={e => setSalonInfo({ ...salonInfo, tagline: e.target.value })}
+                  onChange={e => setSalonInfo({ ...salonInfo, tagline: e.target.value, heroTitle: e.target.value })}
+                />
+              </div>
+
+              <div className="form-group" style={{ gridColumn: 'span 2' }}>
+                <label className="form-label">Hero Description</label>
+                <textarea
+                  rows={2}
+                  className="form-control"
+                  value={salonInfo.heroDescription}
+                  onChange={e => setSalonInfo({ ...salonInfo, heroDescription: e.target.value })}
                 />
               </div>
 
@@ -448,16 +551,6 @@ export const AdminDashboard = () => {
               </div>
 
               <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                <label className="form-label">Google Maps URL</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={salonInfo.googleMapsUrl}
-                  onChange={e => setSalonInfo({ ...salonInfo, googleMapsUrl: e.target.value })}
-                />
-              </div>
-
-              <div className="form-group" style={{ gridColumn: 'span 2' }}>
                 <label className="form-label">Operating Hours</label>
                 <input
                   type="text"
@@ -470,7 +563,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* TAB 4: SERVICES & PRICES CRUD */}
+        {/* TAB 5: SERVICES & PRICES CRUD */}
         {activeAdminTab === 'pricing' && (
           <div className="grid-2" style={{ gap: '3rem', alignItems: 'flex-start' }}>
             <div className="glass-card" style={{ padding: '2rem' }}>
@@ -497,7 +590,8 @@ export const AdminDashboard = () => {
                     onChange={e => setNewService({ ...newService, category: e.target.value })}
                   >
                     <option>Bridal Makeup</option>
-                    <option>Engagement & Reception</option>
+                    <option>Engagement Makeup</option>
+                    <option>Reception Makeup</option>
                     <option>Party & Event Makeup</option>
                     <option>Hairstyling</option>
                     <option>Draping</option>
@@ -514,6 +608,17 @@ export const AdminDashboard = () => {
                     placeholder="15000"
                     value={newService.price}
                     onChange={e => setNewService({ ...newService, price: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Duration</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. 2.5 Hours"
+                    value={newService.duration}
+                    onChange={e => setNewService({ ...newService, duration: e.target.value })}
                   />
                 </div>
 
@@ -566,7 +671,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* TAB 5: PACKAGES MANAGER */}
+        {/* TAB 6: PACKAGES MANAGER */}
         {activeAdminTab === 'packages' && (
           <div className="grid-2" style={{ gap: '3rem', alignItems: 'flex-start' }}>
             <div className="glass-card" style={{ padding: '2rem' }}>
@@ -660,7 +765,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* TAB 6: BUILD YOUR PACKAGE CONFIG */}
+        {/* TAB 7: BUILD YOUR PACKAGE CONFIG */}
         {activeAdminTab === 'custom-calc' && (
           <div className="glass-card" style={{ padding: '2rem', maxWidth: '650px', margin: '0 auto' }}>
             <h3 style={{ fontSize: '1.4rem', marginBottom: '1.25rem', color: 'var(--text-primary)' }}>Build Your Package Configuration</h3>
@@ -685,23 +790,13 @@ export const AdminDashboard = () => {
               />
             </div>
 
-            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-              <label className="form-label">Fixed Advance Amount (if percentage disabled)</label>
-              <input
-                type="number"
-                className="form-control"
-                value={salonInfo.fixedAdvanceAmount}
-                onChange={e => setSalonInfo({ ...salonInfo, fixedAdvanceAmount: parseInt(e.target.value) || 1000 })}
-              />
-            </div>
-
             <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', background: 'rgba(212,175,55,0.05)', padding: '1rem', borderRadius: '8px' }}>
-              💡 All dynamic calculations in the <strong>Build Package</strong> wizard automatically use these configured rates.
+              💡 All calculations in the <strong>Build Package</strong> wizard automatically use these configured rates.
             </div>
           </div>
         )}
 
-        {/* TAB 7: DISCOUNT OFFERS */}
+        {/* TAB 8: DISCOUNT OFFERS */}
         {activeAdminTab === 'offers' && (
           <div className="grid-2" style={{ gap: '3rem', alignItems: 'flex-start' }}>
             <div className="glass-card" style={{ padding: '2rem' }}>
@@ -808,7 +903,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* TAB 8: PORTFOLIO CMS */}
+        {/* TAB 9: PORTFOLIO CMS */}
         {activeAdminTab === 'portfolio-cms' && (
           <div className="grid-2" style={{ gap: '3rem', alignItems: 'flex-start' }}>
             <div className="glass-card" style={{ padding: '2rem' }}>
@@ -898,11 +993,139 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* TAB 9: ABOUT, STATS & POLICIES */}
+        {/* TAB 10: TESTIMONIALS MANAGER */}
+        {activeAdminTab === 'testimonials' && (
+          <div className="grid-2" style={{ gap: '3rem', alignItems: 'flex-start' }}>
+            <div className="glass-card" style={{ padding: '2rem' }}>
+              <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>Add Customer Review</h3>
+
+              <form onSubmit={handleAddTestimonialSubmit}>
+                <div className="form-group">
+                  <label className="form-label">Client Name *</label>
+                  <input
+                    type="text"
+                    required
+                    className="form-control"
+                    placeholder="e.g. Aditi Rao"
+                    value={newTestimonial.name}
+                    onChange={e => setNewTestimonial({ ...newTestimonial, name: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Service Booked</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. Bridal Signature Package"
+                    value={newTestimonial.serviceBooked}
+                    onChange={e => setNewTestimonial({ ...newTestimonial, serviceBooked: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Review Text *</label>
+                  <textarea
+                    rows={4}
+                    required
+                    className="form-control"
+                    placeholder="Enter customer review text..."
+                    value={newTestimonial.review}
+                    onChange={e => setNewTestimonial({ ...newTestimonial, review: e.target.value })}
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-gold" style={{ width: '100%' }}>
+                  <Plus size={16} /> Add Testimonial
+                </button>
+              </form>
+            </div>
+
+            <div>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '1.25rem' }}>Active Customer Reviews ({testimonials.length})</h3>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {testimonials.map(t => (
+                  <div key={t.id} className="glass-card" style={{ padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ color: 'var(--primary-gold)', marginBottom: '0.2rem' }}>{"★".repeat(t.rating)}</div>
+                      <h4 style={{ fontSize: '1.15rem', color: 'var(--text-primary)' }}>{t.name} — <span style={{ fontSize: '0.85rem', color: 'var(--primary-rose)' }}>{t.serviceBooked}</span></h4>
+                      <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>"{t.review}"</p>
+                    </div>
+
+                    <button onClick={() => handleDeleteTestimonial(t.id)} className="btn btn-outline-white btn-sm" style={{ color: '#e74c3c' }}>
+                      <Trash2 size={16} /> Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 11: FAQ MANAGER */}
+        {activeAdminTab === 'faqs' && (
+          <div className="grid-2" style={{ gap: '3rem', alignItems: 'flex-start' }}>
+            <div className="glass-card" style={{ padding: '2rem' }}>
+              <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem' }}>Add FAQ Item</h3>
+
+              <form onSubmit={handleAddFaqSubmit}>
+                <div className="form-group">
+                  <label className="form-label">Question *</label>
+                  <input
+                    type="text"
+                    required
+                    className="form-control"
+                    placeholder="e.g. Do you provide home service?"
+                    value={newFaq.question}
+                    onChange={e => setNewFaq({ ...newFaq, question: e.target.value })}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Answer *</label>
+                  <textarea
+                    rows={4}
+                    required
+                    className="form-control"
+                    placeholder="Enter full answer details..."
+                    value={newFaq.answer}
+                    onChange={e => setNewFaq({ ...newFaq, answer: e.target.value })}
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-gold" style={{ width: '100%' }}>
+                  <Plus size={16} /> Add FAQ to Website
+                </button>
+              </form>
+            </div>
+
+            <div>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '1.25rem' }}>Active Website FAQs ({faqs.length})</h3>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '550px', overflowY: 'auto' }}>
+                {faqs.map(f => (
+                  <div key={f.id} className="glass-card" style={{ padding: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: '0.4rem' }}>{f.question}</strong>
+                      <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>{f.answer}</p>
+                    </div>
+
+                    <button onClick={() => handleDeleteFaq(f.id)} className="btn btn-outline-white btn-sm" style={{ color: '#e74c3c' }}>
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 12: ABOUT, STATS & POLICIES */}
         {activeAdminTab === 'settings' && (
           <div className="grid-2" style={{ gap: '3rem' }}>
             <div className="glass-card" style={{ padding: '2rem' }}>
-              <h3 style={{ fontSize: '1.3rem', marginBottom: '1.25rem' }}>Edit About Us Statistics</h3>
+              <h3 style={{ fontSize: '1.3rem', marginBottom: '1.25rem' }}>Edit Trust Statistics Counter</h3>
 
               <div className="form-group">
                 <label className="form-label">Years Experience Counter</label>
@@ -925,7 +1148,7 @@ export const AdminDashboard = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Bridal Makeovers Counter</label>
+                <label className="form-label">Bridal Looks Counter</label>
                 <input
                   type="text"
                   className="form-control"
@@ -935,7 +1158,7 @@ export const AdminDashboard = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Events Covered Counter</label>
+                <label className="form-label">Events Completed Counter</label>
                 <input
                   type="text"
                   className="form-control"
@@ -946,10 +1169,10 @@ export const AdminDashboard = () => {
             </div>
 
             <div className="glass-card" style={{ padding: '2rem' }}>
-              <h3 style={{ fontSize: '1.3rem', marginBottom: '1.25rem' }}>Edit Website Policies</h3>
+              <h3 style={{ fontSize: '1.3rem', marginBottom: '1.25rem' }}>Edit Booking Policies</h3>
 
               <div className="form-group">
-                <label className="form-label">Cancellation & Refund Terms</label>
+                <label className="form-label">Cancellation & Refund Policy</label>
                 <textarea
                   rows={3}
                   className="form-control"
@@ -969,7 +1192,7 @@ export const AdminDashboard = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Home Service Guidelines</label>
+                <label className="form-label">Home Service & Travel Charges</label>
                 <textarea
                   rows={3}
                   className="form-control"

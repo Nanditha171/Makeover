@@ -1,30 +1,45 @@
 // src/components/contact/ContactPage.jsx
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { MapPin, Phone, Mail, Clock, Camera, MessageCircle, Send, ShieldAlert, ChevronDown, ChevronUp } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Camera, MessageCircle, Send, ShieldAlert, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
 
 export const ContactPage = () => {
-  const { salonInfo, policies } = useApp();
+  const { salonInfo, policies, services, packages, createEnquiry, startBooking } = useApp();
   const [openPolicy, setOpenPolicy] = useState('advancePolicy');
-  const [formSent, setFormSent] = useState(false);
-  const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    service: 'Bridal HD Makeup',
+    eventDate: '',
+    location: '',
+    message: ''
+  });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormSent(true);
-    setTimeout(() => {
-      setFormSent(false);
-      setContactForm({ name: '', phone: '', email: '', message: '' });
-      alert('Thank you for contacting Aura Beauty Studio! Our team will call/WhatsApp you shortly.');
-    }, 1000);
+    if (!contactForm.name || !contactForm.phone) return;
+
+    setIsSubmitting(true);
+    await createEnquiry(contactForm);
+    setIsSubmitting(false);
+
+    setContactForm({
+      name: '',
+      phone: '',
+      email: '',
+      service: 'Bridal HD Makeup',
+      eventDate: '',
+      location: '',
+      message: ''
+    });
   };
 
   const policyItems = [
     { key: 'advancePolicy', title: 'Advance Deposit & Booking Policy', text: policies.advancePolicy },
     { key: 'cancellationPolicy', title: 'Cancellation & Refund Policy', text: policies.cancellationPolicy },
-    { key: 'reschedulingPolicy', title: 'Rescheduling Policy', text: policies.reschedulingPolicy },
     { key: 'homeServicePolicy', title: 'Home Service & Travel Charges', text: policies.homeServicePolicy },
-    { key: 'lateArrivalPolicy', title: 'Late Arrival & Timings Policy', text: policies.lateArrivalPolicy },
     { key: 'hygienePolicy', title: 'Sanitization & Hygiene Standards', text: policies.hygienePolicy }
   ];
 
@@ -33,13 +48,13 @@ export const ContactPage = () => {
       <div className="container">
         <div className="section-header">
           <span className="section-subtitle">Get In Touch</span>
-          <h2 className="section-title">Contact Us & Salon Location</h2>
+          <h2 className="section-title">Contact Us & Studio Location</h2>
           <p className="section-description">
-            We are delighted to assist you with inquiries, bridal dates check, or salon appointments.
+            We are delighted to assist you with inquiries, bridal availability checks, or custom package bookings.
           </p>
         </div>
 
-        {/* Contact Information & Form Grid */}
+        {/* Contact Information & Enquiry Form Grid */}
         <div className="grid-2" style={{ gap: '3rem', marginBottom: '4rem', alignItems: 'flex-start' }}>
           {/* Info Card */}
           <div>
@@ -57,7 +72,7 @@ export const ContactPage = () => {
               <div className="glass-card" style={{ padding: '1.25rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <Phone size={24} style={{ color: 'var(--primary-rose)', flexShrink: 0 }} />
                 <div>
-                  <strong style={{ color: 'var(--text-primary)', display: 'block' }}>Phone / Call Direct</strong>
+                  <strong style={{ color: 'var(--text-primary)', display: 'block' }}>Phone / Direct Call</strong>
                   <a href={`tel:${salonInfo.phone}`} style={{ fontSize: '0.95rem', color: 'var(--primary-gold)' }}>{salonInfo.phone}</a>
                 </div>
               </div>
@@ -65,9 +80,9 @@ export const ContactPage = () => {
               <div className="glass-card" style={{ padding: '1.25rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <MessageCircle size={24} style={{ color: '#2ecc71', flexShrink: 0 }} />
                 <div>
-                  <strong style={{ color: 'var(--text-primary)', display: 'block' }}>WhatsApp Support</strong>
+                  <strong style={{ color: 'var(--text-primary)', display: 'block' }}>WhatsApp Direct Support</strong>
                   <a href={`https://wa.me/${salonInfo.whatsapp}`} target="_blank" rel="noreferrer" style={{ fontSize: '0.95rem', color: '#2ecc71' }}>
-                    +91 98765 43210 (Click to Chat)
+                    {salonInfo.phone} (Click to Chat)
                   </a>
                 </div>
               </div>
@@ -75,7 +90,7 @@ export const ContactPage = () => {
               <div className="glass-card" style={{ padding: '1.25rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <Clock size={24} style={{ color: 'var(--primary-gold)', flexShrink: 0 }} />
                 <div>
-                  <strong style={{ color: 'var(--text-primary)', display: 'block' }}>Working Hours</strong>
+                  <strong style={{ color: 'var(--text-primary)', display: 'block' }}>Studio Hours</strong>
                   <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{salonInfo.hours}</span>
                 </div>
               </div>
@@ -89,19 +104,25 @@ export const ContactPage = () => {
               <a href={`tel:${salonInfo.phone}`} className="btn btn-outline-gold btn-sm">
                 <Phone size={15} /> Call Now
               </a>
-              <a href={`https://wa.me/${salonInfo.whatsapp}`} target="_blank" rel="noreferrer" className="btn btn-outline-white btn-sm" style={{ color: '#2ecc71' }}>
+              <a href={`https://wa.me/${salonInfo.whatsapp}`} target="_blank" rel="noreferrer" className="btn btn-outline-white btn-sm" style={{ color: '#2ecc71', borderColor: 'rgba(46,204,113,0.4)' }}>
                 <MessageCircle size={15} /> WhatsApp Us
               </a>
+              <button onClick={() => startBooking(null, 'salon')} className="btn btn-rose btn-sm">
+                <Calendar size={15} /> Book Appointment
+              </button>
             </div>
           </div>
 
-          {/* Interactive Contact Form */}
+          {/* Customer Enquiry Form */}
           <div className="glass-card" style={{ padding: '2rem', border: '1px solid var(--border-gold)' }}>
-            <h3 style={{ fontSize: '1.4rem', marginBottom: '1.25rem', color: 'var(--text-primary)' }}>Send an Inquiry</h3>
+            <h3 style={{ fontSize: '1.4rem', marginBottom: '0.4rem', color: 'var(--text-primary)' }}>Customer Enquiry Form</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginBottom: '1.5rem' }}>
+              Not ready to book yet? Send us your requirements and event date for a custom quote.
+            </p>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label className="form-label">Your Name *</label>
+                <label className="form-label">Full Name *</label>
                 <input
                   type="text"
                   required
@@ -137,30 +158,68 @@ export const ContactPage = () => {
                 </div>
               </div>
 
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="form-group">
+                  <label className="form-label">Service Interested In</label>
+                  <select
+                    className="form-control"
+                    value={contactForm.service}
+                    onChange={e => setContactForm({ ...contactForm, service: e.target.value })}
+                  >
+                    <optgroup label="Services">
+                      {services.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+                    </optgroup>
+                    <optgroup label="Packages">
+                      {packages.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
+                    </optgroup>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Target Event Date</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={contactForm.eventDate}
+                    onChange={e => setContactForm({ ...contactForm, eventDate: e.target.value })}
+                  />
+                </div>
+              </div>
+
               <div className="form-group">
-                <label className="form-label">Your Inquiry / Message *</label>
-                <textarea
-                  rows={4}
-                  required
+                <label className="form-label">Event Location / City Zone</label>
+                <input
+                  type="text"
                   className="form-control"
-                  placeholder="Mention your event date, number of people, or preferred makeup service..."
+                  placeholder="e.g. Jubilee Hills, Hyderabad / Venue address"
+                  value={contactForm.location}
+                  onChange={e => setContactForm({ ...contactForm, location: e.target.value })}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Message / Custom Requirements</label>
+                <textarea
+                  rows={3}
+                  className="form-control"
+                  placeholder="Mention number of guests, trial requests, or timing preferences..."
                   value={contactForm.message}
                   onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
                 />
               </div>
 
-              <button type="submit" disabled={formSent} className="btn btn-gold" style={{ width: '100%' }}>
-                <Send size={16} /> {formSent ? 'Sending Inquiry...' : 'Submit Message'}
+              <button type="submit" disabled={isSubmitting} className="btn btn-gold" style={{ width: '100%' }}>
+                <Send size={16} /> {isSubmitting ? 'Submitting Enquiry...' : 'Submit Customer Enquiry'}
               </button>
             </form>
           </div>
         </div>
 
-        {/* CANCELLATION & BOOKING POLICIES SECTION */}
+        {/* BOOKING POLICIES SECTION */}
         <div style={{ paddingTop: '2rem', borderTop: '1px solid var(--border-subtle)' }}>
           <div className="section-header">
-            <span className="section-subtitle">Terms & FAQ</span>
-            <h2 className="section-title">Cancellation & Booking Policies</h2>
+            <span className="section-subtitle">Transparency & Terms</span>
+            <h2 className="section-title">Booking Policies</h2>
           </div>
 
           <div style={{ maxWidth: '850px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>

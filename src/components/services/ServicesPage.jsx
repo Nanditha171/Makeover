@@ -11,7 +11,8 @@ export const ServicesPage = () => {
   const categories = [
     'All',
     'Bridal Makeup',
-    'Engagement & Reception',
+    'Engagement Makeup',
+    'Reception Makeup',
     'Party & Event Makeup',
     'Hairstyling',
     'Draping',

@@ -10,13 +10,16 @@ import { fileURLToPath } from 'url';
 import {
   INITIAL_STATS,
   INITIAL_SALON_INFO,
+  INITIAL_WHY_CHOOSE,
   INITIAL_SERVICES,
   INITIAL_PACKAGES,
   INITIAL_PORTFOLIO,
   INITIAL_OFFERS,
   INITIAL_TESTIMONIALS,
+  INITIAL_FAQS,
   INITIAL_POLICIES,
   INITIAL_BOOKINGS,
+  INITIAL_ENQUIRIES,
   INITIAL_BLOCKED_SLOTS
 } from './src/data/initialData.js';
 
@@ -36,25 +39,32 @@ app.use(express.json());
 
 const DB_PATH = path.join(__dirname, 'db.json');
 
-// Initialize DB file if not exists
 const initializeDB = () => {
   if (!fs.existsSync(DB_PATH)) {
     const defaultData = {
       stats: INITIAL_STATS,
       salonInfo: INITIAL_SALON_INFO,
+      whyChoose: INITIAL_WHY_CHOOSE,
       services: INITIAL_SERVICES,
       packages: INITIAL_PACKAGES,
       portfolio: INITIAL_PORTFOLIO,
       offers: INITIAL_OFFERS,
       testimonials: INITIAL_TESTIMONIALS,
+      faqs: INITIAL_FAQS,
       policies: INITIAL_POLICIES,
       bookings: INITIAL_BOOKINGS,
+      enquiries: INITIAL_ENQUIRIES,
       blockedSlots: INITIAL_BLOCKED_SLOTS
     };
     fs.writeFileSync(DB_PATH, JSON.stringify(defaultData, null, 2));
     return defaultData;
   }
-  return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+  const loaded = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+  // Ensure new keys exist if loading old db
+  if (!loaded.whyChoose) loaded.whyChoose = INITIAL_WHY_CHOOSE;
+  if (!loaded.faqs) loaded.faqs = INITIAL_FAQS;
+  if (!loaded.enquiries) loaded.enquiries = INITIAL_ENQUIRIES;
+  return loaded;
 };
 
 let db = initializeDB();
@@ -145,7 +155,20 @@ app.post('/api/bookings', (req, res) => {
   res.status(201).json({ success: true, booking: newBooking });
 });
 
-// 6. Admin Content Management Updates API
+// 6. Public Customer Enquiry Submission API
+app.post('/api/enquiries', (req, res) => {
+  const newEnquiry = {
+    id: `enq-${Date.now()}`,
+    status: 'Pending',
+    dateSubmitted: new Date().toISOString().split('T')[0],
+    ...req.body
+  };
+  db.enquiries = [newEnquiry, ...(db.enquiries || [])];
+  saveDB();
+  res.status(201).json({ success: true, message: 'Enquiry submitted successfully.', enquiry: newEnquiry });
+});
+
+// 7. Admin Content Management Updates API
 app.post('/api/admin/update-content', authenticateAdmin, (req, res) => {
   const { key, data } = req.body;
   if (!key || data === undefined) {
@@ -157,7 +180,7 @@ app.post('/api/admin/update-content', authenticateAdmin, (req, res) => {
   res.json({ success: true, message: 'Changes saved successfully.', updatedData: db[key] });
 });
 
-// 7. Services CRUD API
+// 8. Services CRUD API
 app.post('/api/admin/services', authenticateAdmin, (req, res) => {
   const newSrv = { ...req.body, id: `srv-${Date.now()}` };
   db.services = [...db.services, newSrv];
@@ -179,7 +202,7 @@ app.delete('/api/admin/services/:id', authenticateAdmin, (req, res) => {
   res.json({ success: true, message: 'Service deleted successfully.', services: db.services });
 });
 
-// 8. Packages CRUD API
+// 9. Packages CRUD API
 app.post('/api/admin/packages', authenticateAdmin, (req, res) => {
   const newPkg = { ...req.body, id: `pkg-${Date.now()}` };
   db.packages = [...db.packages, newPkg];
@@ -194,7 +217,7 @@ app.delete('/api/admin/packages/:id', authenticateAdmin, (req, res) => {
   res.json({ success: true, message: 'Package deleted successfully.', packages: db.packages });
 });
 
-// 9. Offers CRUD API
+// 10. Offers CRUD API
 app.post('/api/admin/offers', authenticateAdmin, (req, res) => {
   const newOff = { ...req.body, id: `off-${Date.now()}` };
   db.offers = [...db.offers, newOff];
@@ -209,7 +232,7 @@ app.delete('/api/admin/offers/:id', authenticateAdmin, (req, res) => {
   res.json({ success: true, message: 'Offer deleted successfully.', offers: db.offers });
 });
 
-// 10. Portfolio CRUD API
+// 11. Portfolio CRUD API
 app.post('/api/admin/portfolio', authenticateAdmin, (req, res) => {
   const newItem = { ...req.body, id: `port-${Date.now()}` };
   db.portfolio = [...db.portfolio, newItem];
@@ -224,7 +247,7 @@ app.delete('/api/admin/portfolio/:id', authenticateAdmin, (req, res) => {
   res.json({ success: true, message: 'Portfolio item deleted successfully.', portfolio: db.portfolio });
 });
 
-// 11. Slot Locker API
+// 12. Slot Locker API
 app.post('/api/admin/blocked-slots', authenticateAdmin, (req, res) => {
   db.blockedSlots = [...db.blockedSlots, req.body];
   saveDB();
@@ -238,7 +261,7 @@ app.delete('/api/admin/blocked-slots', authenticateAdmin, (req, res) => {
   res.json({ success: true, message: 'Slot unblocked successfully.', blockedSlots: db.blockedSlots });
 });
 
-// 12. Update Booking Status API
+// 13. Update Booking Status API
 app.put('/api/admin/bookings/:id/status', authenticateAdmin, (req, res) => {
   const { id } = req.params;
   const { status } = req.body;

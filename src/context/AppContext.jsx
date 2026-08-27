@@ -3,13 +3,16 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
   INITIAL_STATS,
   INITIAL_SALON_INFO,
+  INITIAL_WHY_CHOOSE,
   INITIAL_SERVICES,
   INITIAL_PACKAGES,
   INITIAL_PORTFOLIO,
   INITIAL_OFFERS,
   INITIAL_TESTIMONIALS,
+  INITIAL_FAQS,
   INITIAL_POLICIES,
   INITIAL_BOOKINGS,
+  INITIAL_ENQUIRIES,
   INITIAL_BLOCKED_SLOTS
 } from '../data/initialData';
 
@@ -31,19 +34,22 @@ export const AppProvider = ({ children }) => {
   // App Data States (synced from API / DB)
   const [stats, setStats] = useState(INITIAL_STATS);
   const [salonInfo, setSalonInfo] = useState(INITIAL_SALON_INFO);
+  const [whyChoose, setWhyChoose] = useState(INITIAL_WHY_CHOOSE);
   const [services, setServices] = useState(INITIAL_SERVICES);
   const [packages, setPackages] = useState(INITIAL_PACKAGES);
   const [portfolio, setPortfolio] = useState(INITIAL_PORTFOLIO);
   const [offers, setOffers] = useState(INITIAL_OFFERS);
   const [testimonials, setTestimonials] = useState(INITIAL_TESTIMONIALS);
+  const [faqs, setFaqs] = useState(INITIAL_FAQS);
   const [policies, setPolicies] = useState(INITIAL_POLICIES);
   const [bookings, setBookings] = useState(INITIAL_BOOKINGS);
+  const [enquiries, setEnquiries] = useState(INITIAL_ENQUIRIES);
   const [blockedSlots, setBlockedSlots] = useState(INITIAL_BLOCKED_SLOTS);
 
   // Modal State
   const [modalState, setModalState] = useState({
     isOpen: false,
-    type: null, // 'confirmation' | 'payment' | 'lightbox' | 'login'
+    type: null, // 'confirmation' | 'payment' | 'lightbox' | 'enquiry'
     data: null
   });
 
@@ -65,13 +71,16 @@ export const AppProvider = ({ children }) => {
         const data = await res.json();
         if (data.stats) setStats(data.stats);
         if (data.salonInfo) setSalonInfo(data.salonInfo);
+        if (data.whyChoose) setWhyChoose(data.whyChoose);
         if (data.services) setServices(data.services);
         if (data.packages) setPackages(data.packages);
         if (data.portfolio) setPortfolio(data.portfolio);
         if (data.offers) setOffers(data.offers);
         if (data.testimonials) setTestimonials(data.testimonials);
+        if (data.faqs) setFaqs(data.faqs);
         if (data.policies) setPolicies(data.policies);
         if (data.bookings) setBookings(data.bookings);
+        if (data.enquiries) setEnquiries(data.enquiries);
         if (data.blockedSlots) setBlockedSlots(data.blockedSlots);
       }
     } catch (err) {
@@ -96,13 +105,11 @@ export const AppProvider = ({ children }) => {
             setIsAdminAuthenticated(true);
           }
         })
-        .catch(() => {
-          // If server offline, maintain token state
-        });
+        .catch(() => {});
     }
   }, [adminToken]);
 
-  // Admin Login Action (Validated against backend bcrypt hash)
+  // Admin Login Action
   const adminLogin = async (username, password) => {
     setAuthError('');
     try {
@@ -201,6 +208,33 @@ export const AppProvider = ({ children }) => {
     return newBooking;
   };
 
+  // Create Customer Enquiry API call
+  const createEnquiry = async (enquiryData) => {
+    try {
+      const res = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(enquiryData)
+      });
+      const data = await res.json();
+      if (data.enquiry) {
+        setEnquiries(prev => [data.enquiry, ...(prev || [])]);
+        showToast('Your enquiry has been submitted successfully! We will contact you shortly.');
+        return data.enquiry;
+      }
+    } catch (err) {}
+
+    const newEnq = {
+      id: `enq-${Date.now()}`,
+      status: 'Pending',
+      dateSubmitted: new Date().toISOString().split('T')[0],
+      ...enquiryData
+    };
+    setEnquiries(prev => [newEnq, ...(prev || [])]);
+    showToast('Your enquiry has been submitted successfully!');
+    return newEnq;
+  };
+
   // Generic Backend Content Update Helper
   const updateContentSection = async (key, data) => {
     try {
@@ -212,7 +246,6 @@ export const AppProvider = ({ children }) => {
         },
         body: JSON.stringify({ key, data })
       });
-      const result = await res.json();
       if (res.ok) {
         showToast('Changes saved successfully.');
       }
@@ -327,22 +360,52 @@ export const AppProvider = ({ children }) => {
     });
   };
 
-  // Salon Info / Business Settings Update
+  // Update Enquiry Status / Delete
+  const updateEnquiryStatus = async (id, status) => {
+    setEnquiries(prev => {
+      const updated = prev.map(e => e.id === id ? { ...e, status } : e);
+      updateContentSection('enquiries', updated);
+      return updated;
+    });
+  };
+
+  const deleteEnquiry = async (id) => {
+    setEnquiries(prev => {
+      const updated = prev.filter(e => e.id !== id);
+      updateContentSection('enquiries', updated);
+      return updated;
+    });
+  };
+
+  // Content Setters
   const saveSalonInfo = (newInfo) => {
     setSalonInfo(newInfo);
     updateContentSection('salonInfo', newInfo);
   };
 
-  // About Stats Update
   const saveStats = (newStats) => {
     setStats(newStats);
     updateContentSection('stats', newStats);
   };
 
-  // Policies Update
   const savePolicies = (newPolicies) => {
     setPolicies(newPolicies);
     updateContentSection('policies', newPolicies);
+  };
+
+  const saveFaqs = (newFaqs) => {
+    setFaqs(newFaqs);
+    updateContentSection('faqs', newFaqs);
+  };
+
+  const saveWhyChoose = (newWhy) => {
+    setWhyChoose(newWhy);
+    updateContentSection('whyChoose', newWhy);
+  };
+
+  const saveTestimonials = (newTestimonials) => {
+    setTestimonials(newTestimonials);
+    updateContentSection('testimonials', newTestimonials);
   };
 
   // Modal Controls
@@ -375,14 +438,23 @@ export const AppProvider = ({ children }) => {
       setStats: saveStats,
       salonInfo,
       setSalonInfo: saveSalonInfo,
+      whyChoose,
+      setWhyChoose: saveWhyChoose,
       services,
       packages,
       portfolio,
       offers,
       testimonials,
+      setTestimonials: saveTestimonials,
+      faqs,
+      setFaqs: saveFaqs,
       policies,
       setPolicies: savePolicies,
       bookings,
+      enquiries,
+      updateEnquiryStatus,
+      deleteEnquiry,
+      createEnquiry,
       blockedSlots,
       modalState,
       openModal,

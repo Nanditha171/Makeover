@@ -14,12 +14,14 @@ export const PortfolioPage = () => {
     'Reception',
     'Party',
     'Traditional',
+    'HD Makeup',
+    'Airbrush Makeup',
     'Hairstyling'
   ];
 
   const filteredItems = selectedFilter === 'All'
     ? portfolio
-    : portfolio.filter(p => p.category === selectedFilter);
+    : portfolio.filter(p => p.category === selectedFilter || p.type.includes(selectedFilter));
 
   return (
     <div className="portfolio-page section-padding">
@@ -28,7 +30,7 @@ export const PortfolioPage = () => {
           <span className="section-subtitle">Visual Showcase</span>
           <h2 className="section-title">Makeup & Hair Portfolio</h2>
           <p className="section-description">
-            Filter through our real bride transformations, party looks, and hairstyling gallery. Click any look to enlarge or book directly.
+            Filter through our real bride transformations, party looks, and hairstyling gallery. Click any look to enlarge or book a similar look.
           </p>
         </div>
 
@@ -79,7 +81,7 @@ export const PortfolioPage = () => {
                       <Eye size={14} /> Lightbox
                     </button>
                     <button onClick={() => startBooking(item, 'salon')} className="btn btn-gold btn-sm" style={{ flex: 1 }}>
-                      <Sparkles size={14} /> Book Look
+                      <Sparkles size={14} /> Book Similar Look
                     </button>
                   </div>
                 </div>

@@ -1,16 +1,19 @@
 // src/data/initialData.js
+
 export const INITIAL_STATS = {
   yearsExperience: "5+",
   happyClients: "500+",
   bridalMakeovers: "200+",
-  eventsCovered: "50+"
+  eventsCovered: "100+"
 };
 
 export const INITIAL_SALON_INFO = {
   name: "Aura Beauty Studio & Makeup Artistry",
   artistName: "Ananya Sharma",
   title: "Celebrity & Bridal Makeup Specialist",
-  tagline: "Enhancing Your Natural Beauty with Elegance & Precision",
+  tagline: "Your Beauty. Your Occasion. Your Signature Look.",
+  heroTitle: "Your Beauty. Your Occasion. Your Signature Look.",
+  heroDescription: "Hyderabad’s premier luxury makeup studio & doorstep vanity service. Specializing in Bridal HD, Airbrush, Engagement glam, and customized salon rituals.",
   phone: "+91 98765 43210",
   whatsapp: "919876543210",
   email: "contact@aurabeauty.in",
@@ -19,606 +22,748 @@ export const INITIAL_SALON_INFO = {
   instagram: "@aurabeauty_ananya",
   hours: "Monday - Sunday: 10:00 AM - 8:00 PM",
   homeServiceCharge: 500,
-  advancePercent: 30, // 30% advance deposit or fixed
+  advancePercent: 30, // 30% advance deposit
   fixedAdvanceAmount: 1000,
   usePercentageAdvance: true
 };
 
-export const INITIAL_SERVICES = [
-  // BRIDAL MAKEUP
+export const INITIAL_WHY_CHOOSE = [
   {
-    id: "srv-101",
+    id: "why-1",
+    title: "Professional Expertise",
+    description: "Personalized makeup services tailored to your unique facial features, preferences, and special occasion."
+  },
+  {
+    id: "why-2",
+    title: "Premium Products",
+    description: "Authentic, high-end global products (MAC, NARS, Charlotte Tilbury, Huda Beauty) selected for your skin type."
+  },
+  {
+    id: "why-3",
+    title: "Personalized Looks",
+    description: "Every makeup look is customized according to your outfit, jewelry, lighting, and personal aesthetic style."
+  },
+  {
+    id: "why-4",
+    title: "HD & Airbrush Expertise",
+    description: "Flawless, camera-ready finish that looks natural in person and stunning in 4K wedding photography."
+  },
+  {
+    id: "why-5",
+    title: "Hygiene First Protocol",
+    description: "Hospital-grade UV brush sterilization, single-use disposable applicators, and sanitized kit application."
+  },
+  {
+    id: "why-6",
+    title: "Reliable Appointments",
+    description: "Punctual, structured slot management guaranteeing on-time service at our salon or your event venue."
+  }
+];
+
+export const INITIAL_SERVICES = [
+  // 1. BRIDAL MAKEUP
+  {
+    id: "srv-bridal-1",
     name: "Bridal HD Makeup",
     category: "Bridal Makeup",
     price: 12000,
     isStartingFrom: false,
-    duration: "3 Hours",
-    description: "Camera-ready High Definition makeup tailored for long-lasting perfection under studio lighting.",
-    inclusions: ["Skin preparation", "HD Foundation & Contour", "Eyelashes & Contact lens support", "Hair styling & Draping assistance"],
+    duration: "2.5 - 3 Hours",
+    description: "High Definition camera-ready bridal makeup for long-lasting perfection under studio lighting.",
+    inclusions: ["HD Base & Contouring", "Eye Makeup & Lashes", "Blush & Highlight", "Lip Makeup", "Final Touch-up"],
+    availableAt: "Salon | Home Service",
     image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-102",
+    id: "srv-bridal-2",
     name: "Bridal Airbrush Makeup",
     category: "Bridal Makeup",
     price: 15000,
     isStartingFrom: false,
-    duration: "3.5 Hours",
-    description: "Ultra-lightweight, waterproof, and flawless silicon-based airbrush finish that stays 16+ hours.",
-    inclusions: ["TEMPTU Airbrush Base", "Hydrating prep", "Luxury lashes", "Advanced hairstyle & dual draping"],
+    duration: "3 - 3.5 Hours",
+    description: "Ultra-lightweight, 16+ hour waterproof silicon airbrush finish for a flawless poreless look.",
+    inclusions: ["TEMPTU Airbrush Base", "Hydrating prep", "Luxury lashes", "Contouring & Highlight", "Touch-up kit"],
+    availableAt: "Salon | Home Service",
     image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-103",
+    id: "srv-bridal-3",
     name: "Premium Bridal Makeup",
     category: "Bridal Makeup",
     price: 18000,
     isStartingFrom: false,
-    duration: "4 Hours",
-    description: "Luxury bridal transformation using high-end global brands (Charlotte Tilbury, NARS, MAC, Huda Beauty).",
-    inclusions: ["Airbrush or HD option", "Pre-bridal mini skin prep", "Premium mink lashes", "Hair extensions placement", "Jewelry setting"],
+    duration: "3.5 - 4 Hours",
+    description: "Luxury bridal transformation using high-end global cosmetics (Charlotte Tilbury, NARS, Huda Beauty).",
+    inclusions: ["Airbrush/HD choice", "Pre-bridal skin prep", "Premium mink lashes", "Extension placement", "Jewelry setting"],
+    availableAt: "Salon | Home Service",
     image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-104",
-    name: "Bridal Makeup + Hairstyling + Draping",
-    category: "Bridal Makeup",
-    price: 15000,
-    isStartingFrom: false,
-    duration: "3.5 Hours",
-    description: "Complete all-in-one head-to-toe bridal styling package for your big day.",
-    inclusions: ["HD Makeup", "Custom hairstyle", "Saree/Dupatta Draping", "Lashtique lashes"],
-    image: "https://images.unsplash.com/photo-1596704017254-9b121068fb31?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: "srv-105",
-    name: "Bridal Trial Makeup",
+    id: "srv-bridal-4",
+    name: "Bridal Makeup Trial",
     category: "Bridal Makeup",
     price: 2500,
     isStartingFrom: false,
     duration: "1.5 Hours",
-    description: "One-on-one preview consultation & half-face trial to finalize your exact look.",
-    inclusions: ["Skin analysis", "Color match preview", "Look selection"],
+    description: "Dedicated preview consultation & half-face trial to finalize your skin prep, shade match, and eye look.",
+    inclusions: ["Consultation", "Skin & shade assessment", "Base testing", "Eye look discussion", "Hairstyle discussion", "Final look planning"],
+    availableAt: "Salon",
     image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80"
   },
 
-  // ENGAGEMENT / RECEPTION
+  // 2. ENGAGEMENT MAKEUP
   {
-    id: "srv-201",
+    id: "srv-eng-1",
     name: "Engagement Makeup",
-    category: "Engagement & Reception",
+    category: "Engagement Makeup",
     price: 7000,
     isStartingFrom: false,
     duration: "2 Hours",
-    description: "Radiant, soft glam look crafted to complement engagement lehengas and sarees.",
-    inclusions: ["Soft glam foundation", "Eye makeup", "Basic hair styling", "Dupatta drape"],
+    description: "Soft glow makeup designed to complement engagement lehengas, gowns, and silk sarees.",
+    inclusions: ["Radiant base", "Eye styling", "Lashes", "Lip perfection", "Setting spray"],
+    availableAt: "Salon | Home Service",
     image: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-202",
-    name: "Reception Makeup",
-    category: "Engagement & Reception",
-    price: 8000,
-    isStartingFrom: false,
-    duration: "2 Hours",
-    description: "Glamorous evening look with intense shimmer/smokey eyes and long-lasting finish.",
-    inclusions: ["Evening HD foundation", "Glam eye artistry", "Hair styling with accessories"],
-    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=600&q=80"
-  },
-  {
-    id: "srv-203",
+    id: "srv-eng-2",
     name: "HD Engagement Makeup",
-    category: "Engagement & Reception",
+    category: "Engagement Makeup",
     price: 8500,
     isStartingFrom: false,
     duration: "2.5 Hours",
-    description: "High definition finish with photo-friendly glow and natural skin texture.",
-    inclusions: ["HD base", "Lashes", "Updo / curls hair styling"],
-    image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=600&q=80"
+    description: "High Definition flawless finish created for high-res ring ceremony photography.",
+    inclusions: ["HD base", "Smudge-proof eyes", "3D lashes", "Contour & glow", "Touch-up kit"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1596704017254-9b121068fb31?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-204",
+    id: "srv-eng-3",
     name: "Airbrush Engagement Makeup",
-    category: "Engagement & Reception",
+    category: "Engagement Makeup",
     price: 10000,
     isStartingFrom: false,
     duration: "2.5 Hours",
-    description: "Airbrush perfection for high-humidity event resistance and seamless coverage.",
-    inclusions: ["TEMPTU Airbrush", "3D lashes", "Hair styling", "Draping"],
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
+    description: "Silky airbrush application ensuring non-caky long-lasting radiance through evening celebrations.",
+    inclusions: ["Airbrush application", "Custom lip shade", "Mink lashes", "Fixing mist"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80"
   },
 
-  // PARTY / EVENT MAKEUP
+  // 3. RECEPTION MAKEUP
   {
-    id: "srv-301",
+    id: "srv-rec-1",
+    name: "Reception Makeup",
+    category: "Reception Makeup",
+    price: 8000,
+    isStartingFrom: false,
+    duration: "2 Hours",
+    description: "Glamorous evening reception look with bold or elegant tones customized for stage lighting.",
+    inclusions: ["Evening glam base", "Statement eye makeup", "Lashes", "Highlight & contour"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "srv-rec-2",
+    name: "HD Reception Makeup",
+    category: "Reception Makeup",
+    price: 9000,
+    isStartingFrom: false,
+    duration: "2.5 Hours",
+    description: "High-definition camera-ready reception makeup with flawless sculpting and glow.",
+    inclusions: ["HD formula", "Glitter/Shimmer eyes", "Volumizing lashes", "Setting mist"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "srv-rec-3",
+    name: "Airbrush Reception Makeup",
+    category: "Reception Makeup",
+    price: 10000,
+    isStartingFrom: false,
+    duration: "2.5 Hours",
+    description: "Long-wear airbrush finish tailored for grandeur night receptions and red-carpet photography.",
+    inclusions: ["Airbrush base", "Luxury eye makeup", "3D lashes", "Contour & cheek tint"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80"
+  },
+
+  // 4. PARTY & EVENT MAKEUP
+  {
+    id: "srv-pty-1",
     name: "Party Makeup",
     category: "Party & Event Makeup",
     price: 2500,
     isStartingFrom: false,
     duration: "1 Hour",
-    description: "Elegant party look for sangeet, cocktail, or family gatherings.",
-    inclusions: ["Base makeup", "Eye lining & shadow", "Lip color", "Basic hair styling"],
-    image: "https://images.unsplash.com/photo-1500840216050-6ffa99d75160?auto=format&fit=crop&w=600&q=80"
+    description: "Elegant, lightweight party makeover for sangeet, cocktail parties, and family celebrations.",
+    inclusions: ["Light foundation", "Eye styling", "Basic lashes", "Lip tint"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-302",
+    id: "srv-pty-2",
     name: "HD Party Makeup",
     category: "Party & Event Makeup",
     price: 3500,
     isStartingFrom: false,
     duration: "1.5 Hours",
-    description: "HD flawless base for bridesmaid, sister of the bride, or special guest.",
-    inclusions: ["HD Base", "Eyelashes", "Hair blowout/curls"],
+    description: "Camera-perfect HD party makeup for bridesmaids, sisters of the bride/groom, and guests.",
+    inclusions: ["HD base", "Smokey/Glam eyes", "Lashes", "Highlight & blush"],
+    availableAt: "Salon | Home Service",
     image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-303",
+    id: "srv-pty-3",
     name: "Airbrush Party Makeup",
     category: "Party & Event Makeup",
     price: 4500,
     isStartingFrom: false,
     duration: "1.5 Hours",
-    description: "Long-wearing airbrush base for high-energy dance & night celebrations.",
-    inclusions: ["Airbrush foundation", "3D Lashes", "Custom hair design"],
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80"
+    description: "Flawless airbrush finish for high-profile events and night celebrations.",
+    inclusions: ["Airbrush foundation", "Glam eye design", "Premium lashes", "Fixer"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-304",
-    name: "Corporate / Event Makeup",
+    id: "srv-pty-4",
+    name: "Event Makeup",
     category: "Party & Event Makeup",
     price: 3000,
     isStartingFrom: true,
-    duration: "1 Hour",
-    description: "Professional camera & stage makeup for keynotes, award ceremonies, and media appearances.",
-    inclusions: ["Matte anti-shine base", "Natural definition", "Hair neatening"],
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80"
+    duration: "1.5 Hours",
+    description: "Custom makeup for photoshoots, stage events, baby showers, and anniversary galas.",
+    inclusions: ["Custom base", "Eye design", "Lashes", "Setting mist"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1596704017254-9b121068fb31?auto=format&fit=crop&w=600&q=80"
   },
 
-  // HAIRSTYLING
+  // 5. HAIRSTYLING
   {
-    id: "srv-401",
+    id: "srv-hair-1",
     name: "Basic Hairstyling",
     category: "Hairstyling",
     price: 1000,
     isStartingFrom: false,
     duration: "45 Mins",
-    description: "Blowdry, straightening, or loose waves.",
-    inclusions: ["Heat protection spray", "Styling"],
-    image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=600&q=80"
+    description: "Classic blow-dry, soft curls, straightening, or simple buns for party looks.",
+    inclusions: ["Heat protection", "Curls/Blow-dry", "Setting spray"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-402",
+    id: "srv-hair-2",
     name: "Bridal Hairstyling",
     category: "Hairstyling",
     price: 2500,
     isStartingFrom: false,
     duration: "1.5 Hours",
-    description: "Intricate traditional braided hair with flower garland (Gajra) placement or bun with net.",
-    inclusions: ["Stuffing/padding", "Floral placement", "Jewelry setting"],
-    image: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=600&q=80"
+    description: "Elaborate traditional bridal buns, South Indian braided flowers, or structured updos.",
+    inclusions: ["Stuffing & padding", "Floral/Accessory placement", "Strong hold spray"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-403",
+    id: "srv-hair-3",
     name: "Premium Bridal Hairstyling",
     category: "Hairstyling",
     price: 3500,
     isStartingFrom: false,
     duration: "2 Hours",
-    description: "3D textured updos, Hollywood waves, or elaborate royal braid designs.",
-    inclusions: ["Structure padding", "Extension installation", "Accessory pinning"],
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
+    description: "Hollywood glam waves, textured messy boho braids, or intricate designer updos.",
+    inclusions: ["Texture prep", "Extension integration", "Jewelry pins setting"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-404",
-    name: "Hair Extensions Styling",
+    id: "srv-hair-4",
+    name: "Hair Extension Styling",
     category: "Hairstyling",
     price: 1500,
     isStartingFrom: true,
-    duration: "45 Mins",
-    description: "Clip-in or temporary real human hair extension blending and styling.",
-    inclusions: ["Blending", "Styling with heat tools"],
-    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80"
+    duration: "1 Hour",
+    description: "Clip-in real hair extension styling, blending, and volumetric styling.",
+    inclusions: ["Extension placement", "Heat blending", "Styling"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80"
   },
 
-  // DRAPING
+  // 6. DRAPING
   {
-    id: "srv-501",
+    id: "srv-drp-1",
     name: "Saree Draping",
     category: "Draping",
     price: 700,
     isStartingFrom: false,
     duration: "30 Mins",
-    description: "Nivi, South Indian traditional, or modern pleated saree draping.",
-    inclusions: ["Pleating", "Safety pinning", "Ironing touchup"],
-    image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80"
+    description: "Neat, crisp pleating for Kanjeevaram, Silk, Chiffon, or Georgette sarees.",
+    inclusions: ["Ironing pleats", "Pinning", "Shape retention"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-502",
+    id: "srv-drp-2",
     name: "Bridal Saree Draping",
     category: "Draping",
     price: 1200,
     isStartingFrom: false,
     duration: "45 Mins",
-    description: "Heavy Kanjeevaram / silk saree pleating with waist chain & hip belt fixing.",
-    inclusions: ["Box pleating", "Belt securing", "Heavy pallu pinup"],
-    image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80"
+    description: "Heavy bridal saree draping with box pleats, waist belt placement, and security pinning.",
+    inclusions: ["Heavy silk pleating", "Can-can adjustment", "Waistband setting"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-503",
+    id: "srv-drp-3",
     name: "Dupatta Draping",
     category: "Draping",
     price: 500,
     isStartingFrom: false,
     duration: "20 Mins",
-    description: "Single veil or lehenga dupatta pinup.",
-    inclusions: ["Pleating", "Shoulder pinup"],
-    image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=600&q=80"
+    description: "Single dupatta styling for lehengas, Anarkalis, and shararas.",
+    inclusions: ["Pleating", "Shoulder pinning"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1596704017254-9b121068fb31?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-504",
+    id: "srv-drp-4",
     name: "Bridal Dupatta Draping",
     category: "Draping",
     price: 800,
     isStartingFrom: false,
-    duration: "30 Mins",
-    description: "Dual dupatta styling (Head veil setup + chest drape) for bridal lehengas.",
-    inclusions: ["Head veil crown setting", "Chest drape pinning", "Net securing"],
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80"
+    duration: "35 Mins",
+    description: "Dual dupatta regal veil draping over head and shoulder for brides.",
+    inclusions: ["Head veil pinning", "Chest drape", "Safety security"],
+    availableAt: "Salon | Home Service",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
   },
 
-  // SALON BEAUTY SERVICES
+  // 7. SALON BEAUTY SERVICES
   {
-    id: "srv-601",
-    name: "Haircut & Styling",
+    id: "srv-sal-1",
+    name: "Haircut",
     category: "Salon Beauty Services",
     price: 500,
     isStartingFrom: true,
     duration: "45 Mins",
-    description: "Precision haircut tailored to face shape followed by signature blowdry.",
-    inclusions: ["Shampoo wash", "Haircut", "Blowdry styling"],
-    image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=600&q=80"
+    description: "Precision haircut, layer cut, feather cut, or bob cut including hair wash.",
+    inclusions: ["Hair wash", "Custom cut", "Blow-dry styling"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-602",
-    name: "Hair Spa Ritual",
+    id: "srv-sal-2",
+    name: "Hair Styling",
+    category: "Salon Beauty Services",
+    price: 800,
+    isStartingFrom: true,
+    duration: "45 Mins",
+    description: "Professional wash, blow-dry setting, or tongs styling.",
+    inclusions: ["Hair wash", "Conditioning", "Blow-dry"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "srv-sal-3",
+    name: "Hair Spa",
     category: "Salon Beauty Services",
     price: 1200,
     isStartingFrom: true,
     duration: "1 Hour",
-    description: "Deep conditioning & scalp massage treatment using L'Oreal Mythic Oil.",
-    inclusions: ["Scalp massage", "Steam treatment", "Nourishing mask"],
-    image: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=600&q=80"
+    description: "Deep nourishing L'Oreal / Matrix hair spa ritual with head massage and steam.",
+    inclusions: ["Cream massage", "Steam treatment", "Nourishing wash"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-603",
-    name: "Radiance Facial",
+    id: "srv-sal-4",
+    name: "Facial",
     category: "Salon Beauty Services",
     price: 1000,
     isStartingFrom: true,
     duration: "1 Hour",
-    description: "Deep cleansing, exfoliation, and glow-boosting facial with botanical extracts.",
-    inclusions: ["Cleansing", "Scrub", "Face massage", "Hydrating mask"],
-    image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80"
+    description: "Glowing skin facial (Fruit, Gold, Pearl, O3+ Brightening) customized for skin type.",
+    inclusions: ["Cleansing", "Scrub", "Massage cream", "Pack"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-604",
-    name: "Skin Cleanup",
+    id: "srv-sal-5",
+    name: "Cleanup",
     category: "Salon Beauty Services",
     price: 600,
     isStartingFrom: true,
-    duration: "30 Mins",
-    description: "Instant dirt & blackhead removal cleanup for immediate freshness.",
-    inclusions: ["Steam", "Blackhead removal", "Soothing toner"],
-    image: "https://images.unsplash.com/photo-1512290900673-0498b84931a7?auto=format&fit=crop&w=600&q=80"
+    duration: "40 Mins",
+    description: "Deep pore cleanup for removal of blackheads, dead skin, and instant radiance.",
+    inclusions: ["Steam", "Blackhead extraction", "Soothing pack"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-605",
-    name: "Eyebrow & Upper Lip Threading",
+    id: "srv-sal-6",
+    name: "Threading",
     category: "Salon Beauty Services",
     price: 100,
     isStartingFrom: true,
     duration: "15 Mins",
-    description: "Precision thread shaping for clean brows and smooth upper lip.",
-    inclusions: ["Threading", "Astringent soothing gel"],
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
+    description: "Precise eyebrow shaping and facial threading.",
+    inclusions: ["Eyebrow shaping", "Cooling gel"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-606",
-    name: "Luxury Manicure",
+    id: "srv-sal-7",
+    name: "Eyebrow Threading",
+    category: "Salon Beauty Services",
+    price: 50,
+    isStartingFrom: false,
+    duration: "10 Mins",
+    description: "Eyebrow threading & arch definition.",
+    inclusions: ["Eyebrow arching", "Astringent gel"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "srv-sal-8",
+    name: "Upper Lip Threading",
+    category: "Salon Beauty Services",
+    price: 50,
+    isStartingFrom: false,
+    duration: "5 Mins",
+    description: "Gentle upper lip threading.",
+    inclusions: ["Upper lip threading", "Aloe vera gel"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "srv-sal-9",
+    name: "Manicure",
     category: "Salon Beauty Services",
     price: 700,
     isStartingFrom: false,
     duration: "45 Mins",
-    description: "Exfoliating hand soak, nail shaping, cuticle care, massage & polish.",
-    inclusions: ["Soak", "Scrub", "Massage", "Nail paint"],
-    image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80"
+    description: "Relaxing hand spa manicure with nail shaping, cuticle care, and massage.",
+    inclusions: ["Hand soak", "Scrub", "Massage", "Nail polish"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-607",
-    name: "Luxury Pedicure",
+    id: "srv-sal-10",
+    name: "Pedicure",
     category: "Salon Beauty Services",
     price: 800,
     isStartingFrom: false,
-    duration: "50 Mins",
-    description: "Relaxing foot soak, heel scrub, callus removal, foot massage & color.",
-    inclusions: ["Foot bath", "Callus scrub", "Deep massage", "Color"],
-    image: "https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?auto=format&fit=crop&w=600&q=80"
+    duration: "45 Mins",
+    description: "Soothing foot spa pedicure with heel scrubbing, nail care, and hydrating massage.",
+    inclusions: ["Foot soak", "Heel scrub", "Massage", "Nail paint"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "srv-608",
-    name: "Rica Waxing (Full Arms + Legs)",
+    id: "srv-sal-11",
+    name: "Waxing",
     category: "Salon Beauty Services",
     price: 500,
     isStartingFrom: true,
-    duration: "45 Mins",
-    description: "Gentle Italian Rica wax treatment leaving skin silky soft without redness.",
-    inclusions: ["Pre-wax lotion", "Rica wax application", "Post-wax soothing oil"],
-    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=600&q=80"
+    duration: "30 Mins",
+    description: "Hygienic Rica / Honey waxing for smooth hairless skin.",
+    inclusions: ["Pre-wax gel", "Waxing", "Post-wax oil"],
+    availableAt: "Salon",
+    image: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80"
   }
 ];
 
 export const INITIAL_PACKAGES = [
   {
     id: "pkg-1",
-    name: "BRIDAL BASIC",
+    name: "Bridal Essential",
     price: 15000,
     originalPrice: 18000,
-    badge: "Popular Choice",
-    description: "Essential high-definition bridal package designed for classic elegance and timeless photographs.",
+    description: "Complete classic bridal makeover package for budget-conscious elegant brides.",
     inclusions: [
-      "Bridal HD Makeup",
+      "HD Bridal Makeup",
       "Bridal Hairstyling",
       "Saree Draping",
-      "Basic Lashes",
-      "Makeup Consultation"
+      "Basic Lashes"
     ],
+    badge: "Popular Essential",
     image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80"
   },
   {
     id: "pkg-2",
-    name: "BRIDAL PREMIUM",
+    name: "Bridal Premium",
     price: 22000,
     originalPrice: 26000,
-    badge: "Most Recommended",
-    description: "Complete luxury bridal makeover with airbrush option, hair extensions, and advance trial.",
+    description: "Luxury HD/Airbrush bridal package with hair extensions, dual draping, and skin prep.",
     inclusions: [
-      "Premium HD / Airbrush Makeup",
-      "Advanced Hairstyling",
+      "HD or Airbrush Makeup",
+      "Premium Bridal Hairstyling",
       "Saree & Dupatta Draping",
       "Premium Mink Lashes",
       "Hair Extensions Placement",
-      "Bridal Makeup Trial",
       "Skin Preparation Ritual"
     ],
+    badge: "Most Booked",
     image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
   },
   {
     id: "pkg-3",
-    name: "BRIDAL ROYAL",
+    name: "Bridal Signature",
     price: 30000,
     originalPrice: 36000,
-    badge: "VIP Ultra Luxury",
-    description: "The ultimate celebrity treatment featuring full airbrushing, post-makeup attendant, and full trial.",
+    description: "The ultimate VIP royal bridal experience with trial makeup and full touch-up assistance.",
     inclusions: [
-      "Airbrush Bridal Makeup",
-      "Premium Hairstyling",
-      "Saree & Dupatta Draping",
-      "Premium Lashes",
-      "Hair Extensions Included",
-      "Bridal Trial Included",
-      "Skin Preparation",
-      "Touch-up Kit Provided",
-      "Post-Makeup Assistant (2 Hours)"
+      "TEMPTU Airbrush Makeup",
+      "Premium Bridal Hairstyling",
+      "Bridal Dupatta & Saree Draping",
+      "Real Hair Extensions",
+      "Premium Mink Lashes",
+      "Bridal Makeup Trial Included",
+      "Pre-Bridal Skin Prep Ritual",
+      "Touch-up Assistance Support"
     ],
+    badge: "Royal Luxury",
     image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80"
-  }
-];
-
-export const INITIAL_BEFORE_AFTER = [
-  {
-    id: "ba-1",
-    title: "Classic South Indian Bridal Transformation",
-    beforeImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
-    afterImage: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80",
-    makeupType: "Bridal HD Makeup",
-    service: "Bridal HD Makeup + Gajra Hair",
-    price: 15000,
-    description: "Corrected skin tone unevenness with high-definition moisture base and golden goddess eyes."
-  },
-  {
-    id: "ba-2",
-    title: "Airbrush Reception Glamour",
-    beforeImage: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
-    afterImage: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
-    makeupType: "TEMPTU Airbrush",
-    service: "Airbrush Reception Makeup",
-    price: 10000,
-    description: "Flawless weightless airbrush coverage masking acne pigmentation while enhancing facial bone structure."
-  },
-  {
-    id: "ba-3",
-    title: "Engagement Soft Glow Makeover",
-    beforeImage: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80",
-    afterImage: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=600&q=80",
-    makeupType: "HD Soft Glam",
-    service: "HD Engagement Makeup",
-    price: 8500,
-    description: "Soft rose-toned hues matched with romantic wavy hairstyle for a dreamy daytime function."
   }
 ];
 
 export const INITIAL_PORTFOLIO = [
   {
     id: "port-1",
-    title: "Royal Crimson Bridal Look",
+    title: "Royal Crimson Velvet Bridal Look",
     category: "Bridal",
     type: "Bridal HD Makeup",
-    image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
-    description: "Traditional maroon bridal look featuring matte lip & smoked cut-crease eye makeup."
+    price: "₹15,000",
+    description: "Traditional Telugu bride with glowing golden base, cut-crease eye makeup, and matte crimson lipstick.",
+    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80"
   },
   {
     id: "port-2",
-    title: "Pastel Pink Engagement Elegance",
+    title: "Pastel Elegance Engagement Glam",
     category: "Engagement",
-    type: "Airbrush Makeup",
-    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
-    description: "Soft dewy blush finish matched with silver shimmer eyes for a pastel lehenga."
-  },
-  {
-    id: "port-3",
-    title: "Glitz & Glam Cocktail Night",
-    category: "Reception",
-    type: "HD Party Makeup",
-    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80",
-    description: "High-voltage metallic eyeshadow with deep plum lips and Hollywood hair waves."
-  },
-  {
-    id: "port-4",
-    title: "Traditional Temple Jewelry Bride",
-    category: "Traditional",
-    type: "Bridal HD Makeup",
-    image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80",
-    description: "Authentic South Indian bride with Kanjeevaram saree drape & fresh jasmine Gajra."
-  },
-  {
-    id: "port-5",
-    title: "Bridesmaid Soft Dewy Glam",
-    category: "Party",
-    type: "HD Party Makeup",
-    image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=800&q=80",
-    description: "Natural skin texture glow with soft winged eyeliner and nude glossy lips."
-  },
-  {
-    id: "port-6",
-    title: "Hollywood Textured Waves",
-    category: "Hairstyling",
-    type: "Hairstyling",
-    image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
-    description: "Voluminous shiny open hair waves setting the trend for modern brides."
-  }
-];
-
-export const INITIAL_OFFERS = [
-  {
-    id: "off-1",
-    title: "Bridal Season Super Saver",
-    category: "Bridal",
-    regularPrice: 22000,
-    offerPrice: 18999,
-    savings: 3001,
-    code: "BRIDAL2026",
-    validTill: "2026-10-31",
-    description: "Book your wedding package now and get complimentary HD Trial + Premium Lash upgrade free!",
+    type: "HD Engagement Makeup",
+    price: "₹8,500",
+    description: "Soft peach-pink monochromatic makeup with Hollywood glam waves for a pastel lehenga.",
     image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "off-2",
-    title: "Group Party Makeover Offer",
-    category: "Group Booking",
-    regularPrice: 10500,
-    offerPrice: 8500,
-    savings: 2000,
-    code: "GROUP3GLAM",
-    validTill: "2026-09-30",
-    description: "Book HD Party Makeup for 3 people (Bridesmaids/Family) and get 1 free hair styling!",
-    image: "https://images.unsplash.com/photo-1500840216050-6ffa99d75160?auto=format&fit=crop&w=600&q=80"
+    id: "port-3",
+    title: "Starlight Airbrush Reception Look",
+    category: "Reception",
+    type: "Airbrush Reception Makeup",
+    price: "₹10,000",
+    description: "High-shimmer evening glam with smokey champagne eyes and glossy nude lip perfection.",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80"
   },
   {
-    id: "off-3",
-    title: "First-Time Salon Radiance Package",
-    category: "Salon Service",
-    regularPrice: 3500,
-    offerPrice: 2499,
-    savings: 1001,
-    code: "GLOWNEW",
-    validTill: "2026-12-31",
-    description: "Includes Radiance Facial + Hair Spa + Eyebrow & Upperlip + Manicure at flat 30% off.",
-    image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80"
+    id: "port-4",
+    title: "Sangeet Cocktail Party Glam",
+    category: "Party",
+    type: "HD Party Makeup",
+    price: "₹3,500",
+    description: "Bold winged eyeliner with sculpted cheeks and voluminous textured messy braid.",
+    image: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "port-5",
+    title: "Heritage South Indian Silk Saree Look",
+    category: "Traditional",
+    type: "Bridal HD Makeup",
+    price: "₹12,000",
+    description: "Classic temple jewelry look with Kohl-rimmed lotus eyes and fresh gajra braid.",
+    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "port-6",
+    title: "Boho Textured Bridal Braids",
+    category: "Hairstyling",
+    type: "Bridal Hairstyling",
+    price: "₹2,500",
+    description: "Textured messy boho braid woven with gypsophila baby's breath flowers.",
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80"
   }
 ];
 
 export const INITIAL_TESTIMONIALS = [
   {
     id: "t-1",
-    name: "Sneha Reddy",
-    photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+    name: "Aditi Rao",
     rating: 5,
-    service: "Bridal Royal Package",
-    date: "August 12, 2026",
-    review: "Ananya did my bridal makeup for both my Muhurtham and Reception! The airbrush finish stayed untouched for 14 hours despite humidity. Everyone at the venue complimented my glow!"
+    role: "Bridal Makeup Client",
+    review: "Absolutely loved my bridal look! Ananya was punctual, professional, and understood exactly what I wanted. The airbrush base stayed flawless from 6 AM to midnight without touch-up.",
+    serviceBooked: "Bridal Signature Package",
+    date: "2026-01-18",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
   },
   {
     id: "t-2",
-    name: "Meghna Kapoor",
-    photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80",
+    name: "Sneha Reddy",
     rating: 5,
-    service: "HD Engagement Makeup",
-    date: "July 28, 2026",
-    review: "Loved how light and natural the makeup felt! Priya and Ananya listened to exactly what I wanted. They made me feel so comfortable and confident."
+    role: "Engagement Client",
+    review: "The HD engagement makeup felt so light on my skin! I received endless compliments on my photos. The doorstep home service was super convenient for my morning ceremony.",
+    serviceBooked: "HD Engagement Makeup",
+    date: "2026-02-04",
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80"
   },
   {
     id: "t-3",
-    name: "Dr. Kavita Verma",
-    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80",
+    name: "Pooja Verma",
     rating: 5,
-    service: "Home Service - Party Makeup",
-    date: "August 02, 2026",
-    review: "The home service team arrived right on time with full professional setup, lighting, and sanitized brushes. Super convenient and high salon quality!"
+    role: "Reception & Party Client",
+    review: "Booked Ananya for my reception and sister's party makeup. Spotless hygiene, branded cosmetics, and very patient hairstyling. Highly recommended in Hyderabad!",
+    serviceBooked: "Airbrush Reception Makeup",
+    date: "2026-02-14",
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=150&q=80"
+  }
+];
+
+export const INITIAL_FAQS = [
+  {
+    id: "faq-1",
+    question: "How much advance payment is required to confirm a booking?",
+    answer: "A 30% advance deposit is required to lock your appointment slot on our calendar. The remaining 70% balance is payable on the day of the service."
+  },
+  {
+    id: "faq-2",
+    question: "Do you provide home service / venue makeup?",
+    answer: "Yes! Our lead artist brings a complete professional portable lighting vanity setup, sanitized kit, and high-end cosmetics directly to your home or wedding venue."
+  },
+  {
+    id: "faq-3",
+    question: "Do you provide bridal makeup trials?",
+    answer: "Yes, we offer a dedicated Bridal Makeup Trial service (₹2,500) at our Jubilee Hills studio. It includes skin assessment, shade matching, and half-face look previews."
+  },
+  {
+    id: "faq-4",
+    question: "Are hairstyling and draping included in makeup packages?",
+    answer: "All our bridal and engagement packages include complete hair styling, saree draping, and lashes. For individual makeup services, add-ons can be selected."
+  },
+  {
+    id: "faq-5",
+    question: "Which makeup products and brands do you use?",
+    answer: "We exclusively use authentic global luxury cosmetics including Charlotte Tilbury, NARS, MAC Cosmetics, Huda Beauty, Bobbi Brown, TEMPTU Airbrush, and Kryolan."
+  },
+  {
+    id: "faq-6",
+    question: "How long does bridal makeup take?",
+    answer: "Bridal HD or Airbrush makeup along with hairstyling and draping typically takes between 2.5 to 3.5 hours."
+  },
+  {
+    id: "faq-7",
+    question: "How early should I book for my wedding date?",
+    answer: "We recommend booking 2 to 6 months in advance for peak wedding seasons as we operate with a single makeup artist and slots fill up fast."
+  },
+  {
+    id: "faq-8",
+    question: "Can I reschedule my appointment if my event date changes?",
+    answer: "Rescheduling is permitted up to 7 days prior to your booked date, subject to slot availability on the new date."
+  },
+  {
+    id: "faq-9",
+    question: "What happens if I need to cancel my booking?",
+    answer: "Advance deposits are non-refundable as the slot is reserved exclusively for you. However, you may transfer the deposit amount toward another service date."
+  },
+  {
+    id: "faq-10",
+    question: "Are home-service travel charges applicable?",
+    answer: "Standard home service travel within Jubilee Hills/Banjara Hills is ₹500. Outstation or extended distance travel charges are configured transparently."
+  },
+  {
+    id: "faq-11",
+    question: "Can family members or bridesmaids also book makeup at the venue?",
+    answer: "Yes! Family members can add party makeup or HD party makeover services when booking home service."
+  }
+];
+
+export const INITIAL_OFFERS = [
+  {
+    id: "off-1",
+    title: "Bridal Season Glow Offer",
+    category: "Bridal Special",
+    regularPrice: 22000,
+    offerPrice: 18999,
+    savings: 3001,
+    code: "BRIDALGLOW",
+    validTill: "2026-12-31",
+    description: "Get HD Bridal Makeup + Hair Extensions + Skin Preparation Ritual at a special promotional rate.",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80"
+  },
+  {
+    id: "off-2",
+    title: "Engagement & Reception Combo",
+    category: "Combo Offer",
+    regularPrice: 17000,
+    offerPrice: 14999,
+    savings: 2001,
+    code: "DUALGLAM",
+    validTill: "2026-12-31",
+    description: "Book both Engagement and Reception makeup together and get complimentary trial consultation.",
+    image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=600&q=80"
   }
 ];
 
 export const INITIAL_POLICIES = {
-  advancePolicy: "A minimum of 30% deposit (or ₹1,000 fixed advance) is required to lock dates & time slots. The remaining balance is payable on the event date before or immediately after service.",
-  cancellationPolicy: "Cancellations made 7+ days before the appointment receive an 80% refund of the advance. Cancellations within 48 hours are non-refundable but can be rescheduled once within 60 days.",
-  reschedulingPolicy: "Free rescheduling permitted once if requested at least 72 hours prior to scheduled appointment, subject to artist availability.",
-  homeServicePolicy: "Home service requires a minimum order total of ₹2,500. Travel fee of ₹500 applies within city limits (0-15 km). For outstation or distant locations, additional travel & cab charges apply.",
-  lateArrivalPolicy: "Please arrive 10 minutes prior to your slot. Delays over 20 minutes may result in adjusted styling scope or slot forfeiture to maintain schedule integrity.",
-  hygienePolicy: "We strictly adhere to 100% single-use disposable applicators, sanitized brushes per client, sealed sponges, and alcohol spray disinfected cosmetics."
+  cancellationPolicy: "Advance deposits (30%) are non-refundable to hold calendar dates. Cancellations made at least 7 days prior can convert the deposit into store credit valid for 6 months.",
+  advancePolicy: "A 30% advance deposit is mandatory to lock your date & time slot. Remaining 70% balance is payable at the time of appointment.",
+  homeServicePolicy: "A travel & kit transportation charge of ₹500 is applied for doorstep home & venue services. Venue setup requires clean table space and power socket access.",
+  hygienePolicy: "We enforce strict single-use disposables for mascara, lip color, and sponges. All brushes are sanitized using hospital-grade UV light and 99% alcohol cleansing after every client."
 };
 
 export const INITIAL_BOOKINGS = [
   {
-    id: "GLOW-8491",
-    type: "salon",
-    customerName: "Ritu Sharma",
-    phone: "+91 98111 22334",
-    email: "ritu.sharma@gmail.com",
-    serviceName: "Bridal HD Makeup",
-    serviceId: "srv-101",
-    date: "2026-08-30",
-    timeSlot: "11:00 AM",
+    id: "GLOW-8492",
+    createdDate: "2026-02-20",
+    customerName: "Kavya Reddy",
+    phone: "+91 98765 12345",
+    type: "home",
+    serviceName: "Bridal HD Makeup (Home Service)",
+    date: "2026-03-15",
+    timeSlot: "06:00 AM",
     guestsCount: 1,
-    totalPrice: 12000,
-    advancePaid: 3600,
-    remainingAmount: 8400,
+    address: "Villa 14, Rainbow Vistas, Gachibowli, Hyderabad",
+    totalPrice: 15500,
+    advancePaid: 4650,
+    remainingAmount: 10850,
     status: "Confirmed",
-    paymentStatus: "Paid",
-    createdDate: "2026-08-25"
+    paymentStatus: "Paid (Advance)"
   },
   {
-    id: "GLOW-8492",
-    type: "home",
-    customerName: "Pooja Hegde",
-    phone: "+91 99887 76655",
-    email: "pooja.h@yahoo.com",
-    serviceName: "HD Party Makeup (3 Persons)",
-    serviceId: "srv-302",
-    date: "2026-09-02",
-    timeSlot: "04:00 PM",
-    guestsCount: 3,
-    address: "Flat 402, Lotus Towers, Road No 12, Banjara Hills",
-    landmark: "Near City Center Mall",
-    homeServiceFee: 500,
-    totalPrice: 11000,
-    advancePaid: 3300,
-    remainingAmount: 7700,
+    id: "GLOW-3104",
+    createdDate: "2026-02-22",
+    customerName: "Priyanka Sharma",
+    phone: "+91 91234 56789",
+    type: "salon",
+    serviceName: "HD Engagement Makeup",
+    date: "2026-03-20",
+    timeSlot: "11:00 AM",
+    guestsCount: 1,
+    address: "Salon Studio",
+    totalPrice: 8500,
+    advancePaid: 2550,
+    remainingAmount: 5950,
     status: "Confirmed",
-    paymentStatus: "Paid",
-    createdDate: "2026-08-26"
+    paymentStatus: "Paid (Advance)"
+  }
+];
+
+export const INITIAL_ENQUIRIES = [
+  {
+    id: "enq-1",
+    name: "Ritu Kapoor",
+    phone: "+91 99887 76655",
+    email: "ritu.k@gmail.com",
+    service: "Bridal Signature Package",
+    eventDate: "2026-04-12",
+    location: "Banjara Hills, Hyderabad",
+    message: "Hi Ananya! Looking to book bridal makeup for my wedding in April. Would like to know if trial is available before booking.",
+    status: "Pending",
+    dateSubmitted: "2026-02-26"
   }
 ];
 
 export const INITIAL_BLOCKED_SLOTS = [
-  { date: "2026-09-05", timeSlot: "10:00 AM", reason: "Private VIP Event" },
-  { date: "2026-09-10", timeSlot: "All Day", reason: "Salon Maintenance & Holiday" }
+  {
+    date: "2026-04-01",
+    timeSlot: "All Day",
+    reason: "Outstation Destination Wedding Project"
+  }
 ];
