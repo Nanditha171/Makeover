@@ -6,7 +6,7 @@ import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, ArrowRight } from 'l
 export const AdminLoginModal = () => {
   const { adminLogin, authError, activeTab, isAdminAuthenticated } = useApp();
 
-  const [username, setUsername] = useState('Makeup');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,7 +72,7 @@ export const AdminLoginModal = () => {
                 required
                 className="form-control"
                 style={{ paddingLeft: '2.8rem' }}
-                placeholder="Enter admin username"
+                placeholder="Enter username"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
               />

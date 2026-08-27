@@ -52,28 +52,12 @@ export const Header = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            {/* Account / Role Switcher */}
+            {/* Account Link */}
             <button
               onClick={() => handleNavClick('my-account')}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: activeTab === 'my-account' ? 'var(--primary-gold)' : 'var(--text-secondary)' }}
             >
               <User size={13} /> My Bookings
-            </button>
-
-            <button
-              onClick={() => {
-                if (isAdminAuthenticated) {
-                  setUserRole('admin');
-                  setActiveTab('admin');
-                } else {
-                  setActiveTab('admin');
-                }
-              }}
-              className={`badge ${isAdminAuthenticated ? 'badge-rose' : 'badge-gold'}`}
-              style={{ cursor: 'pointer', transition: 'var(--transition-fast)' }}
-              title="Access owner admin management portal"
-            >
-              <ShieldCheck size={12} /> {isAdminAuthenticated ? 'Admin Panel Active' : 'Owner Admin Login'}
             </button>
           </div>
         </div>

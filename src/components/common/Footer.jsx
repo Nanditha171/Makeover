@@ -103,10 +103,18 @@ export const Footer = () => {
           <div>
             © {new Date().getFullYear()} {salonInfo.name}. All Rights Reserved.
           </div>
-          <div style={{ display: 'flex', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
             <button onClick={() => setActiveTab('contact')} style={{ color: 'inherit' }}>Terms & Policies</button>
             <button onClick={() => setActiveTab('about')} style={{ color: 'inherit' }}>Hygiene Standards</button>
-            <button onClick={() => setActiveTab('admin')} style={{ color: 'var(--primary-gold)' }}>Owner Login</button>
+            <button
+              onClick={() => {
+                setActiveTab('admin');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{ color: 'var(--text-muted)', fontSize: '0.82rem', textDecoration: 'underline', opacity: 0.75 }}
+            >
+              Owner Login
+            </button>
           </div>
         </div>
       </div>
