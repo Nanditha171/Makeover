@@ -13,15 +13,60 @@ import {
   INITIAL_POLICIES,
   INITIAL_BOOKINGS,
   INITIAL_ENQUIRIES,
-  INITIAL_BLOCKED_SLOTS
+  INITIAL_BLOCKED_SLOTS,
+  INITIAL_ARTISTS,
+  INITIAL_PRODUCTS,
+  INITIAL_REVIEWS,
+  INITIAL_ADMIN_USERS,
+  INITIAL_MAINTENANCE_MODE
 } from '../data/initialData';
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+  const validTabs = [
+    'home', 'about', 'services', 'packages', 'custom-package',
+    'portfolio', 'before-after', 'offers', 'contact',
+    'booking-salon', 'booking-home', 'my-account', 'admin', 'admin-login'
+  ];
+
+  const getInitialTab = () => {
+    try {
+      const hash = window.location.hash.replace('#', '').trim();
+      if (hash && validTabs.includes(hash)) {
+        return hash;
+      }
+    } catch {}
+    return 'home';
+  };
+
   // Navigation & Role State
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTabState] = useState(getInitialTab);
   const [userRole, setUserRole] = useState('customer'); // 'customer' | 'admin'
+
+  const setActiveTab = (tab) => {
+    setActiveTabState(tab);
+    try {
+      if (window.location.hash !== `#${tab}`) {
+        window.location.hash = tab;
+      }
+    } catch {}
+  };
+
+  // URL Hash Navigation Listener (supports direct URLs like #admin, #services, and back/forward buttons)
+  useEffect(() => {
+    const handleHashChange = () => {
+      try {
+        const hash = window.location.hash.replace('#', '').trim();
+        if (hash && validTabs.includes(hash)) {
+          setActiveTabState(hash);
+        }
+      } catch {}
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Admin Auth Session
   const [adminToken, setAdminToken] = useState(() => localStorage.getItem('aura_admin_token') || '');
@@ -31,7 +76,7 @@ export const AppProvider = ({ children }) => {
   // Toast Notification state
   const [toastMessage, setToastMessage] = useState('');
 
-  // App Data States (synced from API / DB)
+  // App Data States (synced from API / DB or local storage)
   const [stats, setStats] = useState(INITIAL_STATS);
   const [salonInfo, setSalonInfo] = useState(INITIAL_SALON_INFO);
   const [whyChoose, setWhyChoose] = useState(INITIAL_WHY_CHOOSE);
@@ -42,26 +87,137 @@ export const AppProvider = ({ children }) => {
   const [testimonials, setTestimonials] = useState(INITIAL_TESTIMONIALS);
   const [faqs, setFaqs] = useState(INITIAL_FAQS);
   const [policies, setPolicies] = useState(INITIAL_POLICIES);
-  const [bookings, setBookings] = useState(INITIAL_BOOKINGS);
-  const [enquiries, setEnquiries] = useState(INITIAL_ENQUIRIES);
+
+  // Beauty Platform Entities
+  const [artists, setArtists] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_local_artists');
+      return saved ? JSON.parse(saved) : INITIAL_ARTISTS;
+    } catch {
+      return INITIAL_ARTISTS;
+    }
+  });
+
+  const [products, setProducts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_local_products');
+      return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+    } catch {
+      return INITIAL_PRODUCTS;
+    }
+  });
+
+  const [reviews, setReviews] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_local_reviews');
+      return saved ? JSON.parse(saved) : INITIAL_REVIEWS;
+    } catch {
+      return INITIAL_REVIEWS;
+    }
+  });
+
+  const [adminUsers, setAdminUsers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_local_admin_users');
+      return saved ? JSON.parse(saved) : INITIAL_ADMIN_USERS;
+    } catch {
+      return INITIAL_ADMIN_USERS;
+    }
+  });
+
+  const [maintenanceMode, setMaintenanceMode] = useState(INITIAL_MAINTENANCE_MODE);
+
+  // Real Data: Bookings, Enquiries, Blocked Slots
+  const [bookings, setBookings] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_local_bookings');
+      return saved ? JSON.parse(saved) : INITIAL_BOOKINGS;
+    } catch {
+      return INITIAL_BOOKINGS;
+    }
+  });
+
+  const [enquiries, setEnquiries] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_local_enquiries');
+      return saved ? JSON.parse(saved) : INITIAL_ENQUIRIES;
+    } catch {
+      return INITIAL_ENQUIRIES;
+    }
+  });
+
   const [blockedSlots, setBlockedSlots] = useState(INITIAL_BLOCKED_SLOTS);
+
+  // Customer device booking IDs (to filter My Bookings on customer dashboard)
+  const [myBookingIds, setMyBookingIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_customer_booking_ids');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
   // Modal State
   const [modalState, setModalState] = useState({
     isOpen: false,
-    type: null, // 'confirmation' | 'payment' | 'lightbox' | 'enquiry'
+    type: null, // 'confirmation' | 'payment' | 'lightbox'
     data: null
   });
 
   const [selectedBookingItem, setSelectedBookingItem] = useState(null);
+  const [bookingType, setBookingType] = useState('salon'); // 'salon' | 'home'
 
-  // Show Success Toast Notification
+  // Show Toast Notification
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage('');
     }, 3500);
   };
+
+  // Sync state with localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('aura_local_bookings', JSON.stringify(bookings));
+    } catch {}
+  }, [bookings]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('aura_local_artists', JSON.stringify(artists));
+    } catch {}
+  }, [artists]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('aura_local_products', JSON.stringify(products));
+    } catch {}
+  }, [products]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('aura_local_reviews', JSON.stringify(reviews));
+    } catch {}
+  }, [reviews]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('aura_local_admin_users', JSON.stringify(adminUsers));
+    } catch {}
+  }, [adminUsers]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('aura_local_enquiries', JSON.stringify(enquiries));
+    } catch {}
+  }, [enquiries]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('aura_customer_booking_ids', JSON.stringify(myBookingIds));
+    } catch {}
+  }, [myBookingIds]);
 
   // Fetch Public Data from Backend Database on Mount
   const fetchAppData = async () => {
@@ -72,19 +228,24 @@ export const AppProvider = ({ children }) => {
         if (data.stats) setStats(data.stats);
         if (data.salonInfo) setSalonInfo(data.salonInfo);
         if (data.whyChoose) setWhyChoose(data.whyChoose);
-        if (data.services) setServices(data.services);
-        if (data.packages) setPackages(data.packages);
-        if (data.portfolio) setPortfolio(data.portfolio);
+        if (data.services && data.services.length > 0) setServices(data.services);
+        if (data.packages && data.packages.length > 0) setPackages(data.packages);
+        if (data.portfolio && data.portfolio.length > 0) setPortfolio(data.portfolio);
         if (data.offers) setOffers(data.offers);
         if (data.testimonials) setTestimonials(data.testimonials);
         if (data.faqs) setFaqs(data.faqs);
         if (data.policies) setPolicies(data.policies);
-        if (data.bookings) setBookings(data.bookings);
-        if (data.enquiries) setEnquiries(data.enquiries);
-        if (data.blockedSlots) setBlockedSlots(data.blockedSlots);
+        if (Array.isArray(data.artists) && data.artists.length > 0) setArtists(data.artists);
+        if (Array.isArray(data.products) && data.products.length > 0) setProducts(data.products);
+        if (Array.isArray(data.reviews) && data.reviews.length > 0) setReviews(data.reviews);
+        if (Array.isArray(data.adminUsers) && data.adminUsers.length > 0) setAdminUsers(data.adminUsers);
+        if (data.maintenanceMode !== undefined) setMaintenanceMode(data.maintenanceMode);
+        if (Array.isArray(data.bookings)) setBookings(data.bookings);
+        if (Array.isArray(data.enquiries)) setEnquiries(data.enquiries);
+        if (Array.isArray(data.blockedSlots)) setBlockedSlots(data.blockedSlots);
       }
     } catch (err) {
-      console.warn('API unavailable, falling back to local seed state:', err);
+      console.log('Using local client state (API offline/local mode):', err.message);
     }
   };
 
@@ -92,7 +253,7 @@ export const AppProvider = ({ children }) => {
     fetchAppData();
   }, []);
 
-  // Verify Admin Authentication Session
+  // Verify Admin Authentication Session on Mount / Token change
   useEffect(() => {
     if (adminToken) {
       fetch('/api/admin/verify', {
@@ -100,18 +261,36 @@ export const AppProvider = ({ children }) => {
       })
         .then(res => {
           if (!res.ok) {
-            adminLogout();
+            // Invalid/expired token - clear session
+            setAdminToken('');
+            localStorage.removeItem('aura_admin_token');
+            setIsAdminAuthenticated(false);
+            setUserRole('customer');
           } else {
             setIsAdminAuthenticated(true);
+            setUserRole('admin');
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          // If offline and token is local fallback token, keep session
+          if (adminToken === 'local_admin_session_token') {
+            setIsAdminAuthenticated(true);
+            setUserRole('admin');
+          }
+        });
+    } else {
+      setIsAdminAuthenticated(false);
     }
   }, [adminToken]);
 
-  // Admin Login Action
+  // Admin Login Action - Strict Credential Validation
   const adminLogin = async (username, password) => {
     setAuthError('');
+    if (!username || !password) {
+      setAuthError('Please enter both username and password.');
+      return { success: false, error: 'Please enter both username and password.' };
+    }
+
     try {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
@@ -122,8 +301,9 @@ export const AppProvider = ({ children }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        setAuthError(data.error || 'Invalid credentials');
-        return { success: false, error: data.error || 'Invalid credentials' };
+        const errorMsg = data.error || 'Invalid username or password. Please verify credentials.';
+        setAuthError(errorMsg);
+        return { success: false, error: errorMsg };
       }
 
       setAdminToken(data.token);
@@ -131,15 +311,27 @@ export const AppProvider = ({ children }) => {
       setIsAdminAuthenticated(true);
       setUserRole('admin');
       setActiveTab('admin');
-      showToast('Admin authentication successful! Welcome back.');
+      showToast('Admin login successful! Welcome back.');
       return { success: true };
     } catch (err) {
-      setAuthError('Connection error to security authentication server.');
-      return { success: false, error: 'Authentication server error.' };
+      // Local verification fallback when API is running purely client-side
+      if (username === 'Makeup' && password === 'Nanduj2803') {
+        const dummyToken = 'local_admin_session_token';
+        setAdminToken(dummyToken);
+        localStorage.setItem('aura_admin_token', dummyToken);
+        setIsAdminAuthenticated(true);
+        setUserRole('admin');
+        setActiveTab('admin');
+        showToast('Admin authentication verified.');
+        return { success: true };
+      }
+      const invalidMsg = 'Invalid username or password. Access denied.';
+      setAuthError(invalidMsg);
+      return { success: false, error: invalidMsg };
     }
   };
 
-  // Admin Logout Action
+  // Admin Logout Action - Complete Session Purge & Redirect
   const adminLogout = async () => {
     try {
       await fetch('/api/admin/logout', { method: 'POST' });
@@ -156,15 +348,16 @@ export const AppProvider = ({ children }) => {
   // Price Formatter Helper
   const formatPrice = (price, isStartingFrom = false) => {
     if (price === undefined || price === null) return '₹0';
+    const num = Number(price);
     const formatted = new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0
-    }).format(price);
+    }).format(isNaN(num) ? 0 : num);
     return isStartingFrom ? `${formatted} onwards` : formatted;
   };
 
-  // Single Makeup Artist Slot Availability Checker
+  // Single Slot Availability Checker (checks both booked bookings & blocked slots)
   const checkSlotStatus = (date, timeSlot) => {
     if (!date || !timeSlot) return 'available';
 
@@ -180,22 +373,8 @@ export const AppProvider = ({ children }) => {
     return existingBooking ? 'booked' : 'available';
   };
 
-  // Create Booking API call
+  // Create Booking
   const createBooking = async (bookingData) => {
-    try {
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bookingData)
-      });
-      const data = await res.json();
-      if (data.booking) {
-        setBookings(prev => [data.booking, ...prev]);
-        return data.booking;
-      }
-    } catch (err) {}
-
-    // Local fallback
     const newId = `GLOW-${Math.floor(1000 + Math.random() * 9000)}`;
     const newBooking = {
       id: newId,
@@ -204,38 +383,60 @@ export const AppProvider = ({ children }) => {
       paymentStatus: 'Paid (Advance)',
       ...bookingData
     };
-    setBookings(prev => [newBooking, ...prev]);
-    return newBooking;
-  };
 
-  // Create Customer Enquiry API call
-  const createEnquiry = async (enquiryData) => {
     try {
-      const res = await fetch('/api/enquiries', {
+      const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(enquiryData)
+        body: JSON.stringify(newBooking)
       });
-      const data = await res.json();
-      if (data.enquiry) {
-        setEnquiries(prev => [data.enquiry, ...(prev || [])]);
-        showToast('Your enquiry has been submitted successfully! We will contact you shortly.');
-        return data.enquiry;
+      if (res.ok) {
+        const data = await res.json();
+        if (data.booking) {
+          setBookings(prev => [data.booking, ...prev]);
+          setMyBookingIds(prev => [data.booking.id, ...prev]);
+          return data.booking;
+        }
       }
     } catch (err) {}
 
+    // Local fallback
+    setBookings(prev => [newBooking, ...prev]);
+    setMyBookingIds(prev => [newBooking.id, ...prev]);
+    return newBooking;
+  };
+
+  // Create Customer Enquiry
+  const createEnquiry = async (enquiryData) => {
     const newEnq = {
       id: `enq-${Date.now()}`,
       status: 'Pending',
       dateSubmitted: new Date().toISOString().split('T')[0],
       ...enquiryData
     };
+
+    try {
+      const res = await fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newEnq)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.enquiry) {
+          setEnquiries(prev => [data.enquiry, ...(prev || [])]);
+          showToast('Your inquiry has been submitted! We will contact you shortly.');
+          return data.enquiry;
+        }
+      }
+    } catch (err) {}
+
     setEnquiries(prev => [newEnq, ...(prev || [])]);
-    showToast('Your enquiry has been submitted successfully!');
+    showToast('Your inquiry has been submitted! We will contact you shortly.');
     return newEnq;
   };
 
-  // Generic Backend Content Update Helper
+  // Update Backend Content Helper
   const updateContentSection = async (key, data) => {
     try {
       const res = await fetch('/api/admin/update-content', {
@@ -334,6 +535,129 @@ export const AppProvider = ({ children }) => {
     });
   };
 
+  // Artists CRUD
+  const addArtist = async (newArt) => {
+    const art = { ...newArt, id: `art-${Date.now()}`, rating: 5.0, reviewsCount: 0, status: 'Active' };
+    setArtists(prev => {
+      const updated = [...prev, art];
+      updateContentSection('artists', updated);
+      return updated;
+    });
+    showToast(`Artist ${art.name} added to team.`);
+  };
+
+  const updateArtist = async (updatedArt) => {
+    setArtists(prev => {
+      const updated = prev.map(a => a.id === updatedArt.id ? updatedArt : a);
+      updateContentSection('artists', updated);
+      return updated;
+    });
+    showToast('Artist profile updated.');
+  };
+
+  const deleteArtist = async (id) => {
+    setArtists(prev => {
+      const updated = prev.filter(a => a.id !== id);
+      updateContentSection('artists', updated);
+      return updated;
+    });
+    showToast('Artist removed from team.');
+  };
+
+  // Products CRUD
+  const addProduct = async (newProd) => {
+    const prod = { ...newProd, id: `prod-${Date.now()}`, status: 'In Stock' };
+    setProducts(prev => {
+      const updated = [...prev, prod];
+      updateContentSection('products', updated);
+      return updated;
+    });
+    showToast(`Product ${prod.name} added to inventory.`);
+  };
+
+  const updateProduct = async (updatedProd) => {
+    setProducts(prev => {
+      const updated = prev.map(p => p.id === updatedProd.id ? updatedProd : p);
+      updateContentSection('products', updated);
+      return updated;
+    });
+    showToast('Product inventory updated.');
+  };
+
+  const deleteProduct = async (id) => {
+    setProducts(prev => {
+      const updated = prev.filter(p => p.id !== id);
+      updateContentSection('products', updated);
+      return updated;
+    });
+    showToast('Product removed from catalog.');
+  };
+
+  // Reviews Moderation CRUD
+  const addReview = async (newRev) => {
+    const rev = { ...newRev, id: `rev-${Date.now()}`, date: new Date().toISOString().split('T')[0], status: 'Approved' };
+    setReviews(prev => {
+      const updated = [rev, ...prev];
+      updateContentSection('reviews', updated);
+      return updated;
+    });
+  };
+
+  const updateReviewStatus = async (id, status) => {
+    setReviews(prev => {
+      const updated = prev.map(r => r.id === id ? { ...r, status } : r);
+      updateContentSection('reviews', updated);
+      return updated;
+    });
+    showToast(`Review status updated to ${status}.`);
+  };
+
+  const toggleReviewFeatured = async (id) => {
+    setReviews(prev => {
+      const updated = prev.map(r => r.id === id ? { ...r, featured: !r.featured } : r);
+      updateContentSection('reviews', updated);
+      return updated;
+    });
+    showToast('Featured review status updated.');
+  };
+
+  const deleteReview = async (id) => {
+    setReviews(prev => {
+      const updated = prev.filter(r => r.id !== id);
+      updateContentSection('reviews', updated);
+      return updated;
+    });
+    showToast('Review removed.');
+  };
+
+  // Admin Users Management
+  const addAdminUser = async (newUser) => {
+    const usr = { ...newUser, id: `usr-${Date.now()}`, status: 'Active', lastLogin: 'Never', avatar: (newUser.name || 'U')[0].toUpperCase() };
+    setAdminUsers(prev => {
+      const updated = [...prev, usr];
+      updateContentSection('adminUsers', updated);
+      return updated;
+    });
+    showToast(`User ${usr.name} added to admin portal.`);
+  };
+
+  const deleteAdminUser = async (id) => {
+    setAdminUsers(prev => {
+      const updated = prev.filter(u => u.id !== id);
+      updateContentSection('adminUsers', updated);
+      return updated;
+    });
+    showToast('Admin user access revoked.');
+  };
+
+  // Maintenance Mode Toggle
+  const toggleMaintenanceMode = async () => {
+    const nextState = !maintenanceMode;
+    setMaintenanceMode(nextState);
+    updateContentSection('maintenanceMode', nextState);
+    showToast(nextState ? 'Maintenance mode enabled.' : 'Platform online and live for clients.');
+  };
+
   // Slot Locker CRUD
   const addBlockedSlot = async (blockData) => {
     setBlockedSlots(prev => {
@@ -358,6 +682,7 @@ export const AppProvider = ({ children }) => {
       updateContentSection('bookings', updated);
       return updated;
     });
+    showToast(`Booking #${id} marked as ${status}.`);
   };
 
   // Update Enquiry Status / Delete
@@ -416,8 +741,10 @@ export const AppProvider = ({ children }) => {
     setModalState({ isOpen: false, type: null, data: null });
   };
 
-  const startBooking = (item, type = 'salon') => {
+  // Unified Booking Starter
+  const startBooking = (item = null, type = 'salon') => {
     setSelectedBookingItem(item);
+    setBookingType(type);
     setActiveTab(type === 'home' ? 'booking-home' : 'booking-salon');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -431,6 +758,7 @@ export const AppProvider = ({ children }) => {
       adminToken,
       isAdminAuthenticated,
       authError,
+      setAuthError,
       toastMessage,
       adminLogin,
       adminLogout,
@@ -450,7 +778,26 @@ export const AppProvider = ({ children }) => {
       setFaqs: saveFaqs,
       policies,
       setPolicies: savePolicies,
+      artists,
+      addArtist,
+      updateArtist,
+      deleteArtist,
+      products,
+      addProduct,
+      updateProduct,
+      deleteProduct,
+      reviews,
+      addReview,
+      updateReviewStatus,
+      toggleReviewFeatured,
+      deleteReview,
+      adminUsers,
+      addAdminUser,
+      deleteAdminUser,
+      maintenanceMode,
+      toggleMaintenanceMode,
       bookings,
+      myBookingIds,
       enquiries,
       updateEnquiryStatus,
       deleteEnquiry,
@@ -461,6 +808,8 @@ export const AppProvider = ({ children }) => {
       closeModal,
       selectedBookingItem,
       setSelectedBookingItem,
+      bookingType,
+      setBookingType,
       formatPrice,
       checkSlotStatus,
       createBooking,
@@ -485,3 +834,4 @@ export const AppProvider = ({ children }) => {
 };
 
 export const useApp = () => useContext(AppContext);
+

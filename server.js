@@ -20,7 +20,12 @@ import {
   INITIAL_POLICIES,
   INITIAL_BOOKINGS,
   INITIAL_ENQUIRIES,
-  INITIAL_BLOCKED_SLOTS
+  INITIAL_BLOCKED_SLOTS,
+  INITIAL_ARTISTS,
+  INITIAL_PRODUCTS,
+  INITIAL_REVIEWS,
+  INITIAL_ADMIN_USERS,
+  INITIAL_MAINTENANCE_MODE
 } from './src/data/initialData.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -54,7 +59,12 @@ const initializeDB = () => {
       policies: INITIAL_POLICIES,
       bookings: INITIAL_BOOKINGS,
       enquiries: INITIAL_ENQUIRIES,
-      blockedSlots: INITIAL_BLOCKED_SLOTS
+      blockedSlots: INITIAL_BLOCKED_SLOTS,
+      artists: INITIAL_ARTISTS,
+      products: INITIAL_PRODUCTS,
+      reviews: INITIAL_REVIEWS,
+      adminUsers: INITIAL_ADMIN_USERS,
+      maintenanceMode: INITIAL_MAINTENANCE_MODE
     };
     fs.writeFileSync(DB_PATH, JSON.stringify(defaultData, null, 2));
     return defaultData;
@@ -64,6 +74,11 @@ const initializeDB = () => {
   if (!loaded.whyChoose) loaded.whyChoose = INITIAL_WHY_CHOOSE;
   if (!loaded.faqs) loaded.faqs = INITIAL_FAQS;
   if (!loaded.enquiries) loaded.enquiries = INITIAL_ENQUIRIES;
+  if (!loaded.artists) loaded.artists = INITIAL_ARTISTS;
+  if (!loaded.products) loaded.products = INITIAL_PRODUCTS;
+  if (!loaded.reviews) loaded.reviews = INITIAL_REVIEWS;
+  if (!loaded.adminUsers) loaded.adminUsers = INITIAL_ADMIN_USERS;
+  if (loaded.maintenanceMode === undefined) loaded.maintenanceMode = INITIAL_MAINTENANCE_MODE;
   return loaded;
 };
 

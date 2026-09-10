@@ -19,10 +19,24 @@ import { SalonBookingWizard } from './components/booking/SalonBookingWizard';
 import { HomeServiceWizard } from './components/booking/HomeServiceWizard';
 import { CustomerDashboard } from './components/dashboard/CustomerDashboard';
 import { AdminDashboard } from './components/dashboard/AdminDashboard';
-import { MessageCircle } from 'lucide-react';
+import { AdminLoginPage } from './components/admin/AdminLoginPage';
+
+/**
+ * Protected Route Guard for Admin views
+ * Intercepts unauthenticated requests and displays the AdminLoginPage
+ */
+const AdminProtectedRoute = ({ children }) => {
+  const { isAdminAuthenticated } = useApp();
+
+  if (!isAdminAuthenticated) {
+    return <AdminLoginPage />;
+  }
+
+  return children;
+};
 
 const MainContent = () => {
-  const { activeTab, salonInfo, toastMessage } = useApp();
+  const { activeTab, toastMessage } = useApp();
 
   const renderTab = () => {
     switch (activeTab) {
@@ -37,7 +51,7 @@ const MainContent = () => {
       case 'custom-package':
         return <CustomPackageBuilder />;
       case 'portfolio':
-      case 'before-after': // Redirect legacy before-after tab to Portfolio
+      case 'before-after':
         return <PortfolioPage />;
       case 'offers':
         return <OffersPage />;
@@ -49,37 +63,46 @@ const MainContent = () => {
         return <HomeServiceWizard />;
       case 'my-account':
         return <CustomerDashboard />;
+      case 'admin-login':
+        return <AdminLoginPage />;
       case 'admin':
-        return <AdminDashboard />;
+        return (
+          <AdminProtectedRoute>
+            <AdminDashboard />
+          </AdminProtectedRoute>
+        );
       default:
         return <HomePage />;
     }
   };
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Header />
+  const isAdminRoute = activeTab === 'admin' || activeTab === 'admin-login';
 
-      <main style={{ flex: 1 }}>
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-main)' }}>
+      {!isAdminRoute && <Header />}
+
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         {renderTab()}
       </main>
 
-      <Footer />
+      {!isAdminRoute && <Footer />}
 
       {/* Floating Success Toast */}
       {toastMessage && (
-        <div className="glass-card badge-gold" style={{
+        <div className="glass-card" style={{
           position: 'fixed',
-          top: '80px',
+          top: '75px',
           right: '20px',
           zIndex: 2000,
-          padding: '0.85rem 1.4rem',
-          fontSize: '0.95rem',
-          boxShadow: 'var(--shadow-glow)',
-          border: '1px solid var(--primary-gold)',
+          padding: '0.75rem 1.3rem',
+          fontSize: '0.9rem',
+          fontWeight: '600',
+          boxShadow: 'var(--shadow-md)',
+          border: '1px solid var(--primary-rose)',
           color: 'var(--text-primary)',
-          background: 'var(--bg-card)',
-          animation: 'fadeIn 0.3s ease-out'
+          background: '#FFFFFF',
+          animation: 'fadeIn 0.25s ease-out'
         }}>
           ✨ {toastMessage}
         </div>
@@ -89,17 +112,6 @@ const MainContent = () => {
       <BookingConfirmationModal />
       <PaymentModal />
       <LightboxModal />
-
-      {/* Floating WhatsApp Action Button */}
-      <a
-        href={`https://wa.me/${salonInfo.whatsapp}`}
-        target="_blank"
-        rel="noreferrer"
-        className="floating-whatsapp"
-        title="Chat with Salon on WhatsApp"
-      >
-        <MessageCircle size={30} />
-      </a>
     </div>
   );
 };

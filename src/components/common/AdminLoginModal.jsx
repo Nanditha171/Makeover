@@ -27,37 +27,38 @@ export const AdminLoginModal = () => {
   if (isAdminAuthenticated && activeTab === 'admin') return null;
 
   return (
-    <div className="section-padding" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '70vh' }}>
-      <div className="glass-card" style={{ maxWidth: '460px', width: '100%', padding: '2.5rem', border: '1px solid var(--border-gold)', boxShadow: 'var(--shadow-glow)' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+    <div className="section-padding" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '65vh' }}>
+      <div className="glass-card" style={{ maxWidth: '440px', width: '100%', padding: '2.5rem', border: '1px solid var(--border-rose)', background: '#FFFFFF' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div style={{
-            width: '54px', height: '54px', borderRadius: '50%',
-            background: 'var(--gold-gradient)', color: '#000', display: 'flex',
-            alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem auto'
+            width: '50px', height: '50px', borderRadius: '50%',
+            background: 'var(--rose-gradient)', color: '#FFFFFF', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.85rem auto',
+            boxShadow: '0 4px 14px rgba(212,106,134,0.3)'
           }}>
-            <ShieldCheck size={28} />
+            <ShieldCheck size={26} />
           </div>
 
-          <h2 style={{ fontSize: '1.8rem', color: 'var(--text-primary)', marginBottom: '0.4rem' }}>Owner Admin Login</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Protected portal. Authenticate with authorized credentials to manage website content & prices.
+          <h2 style={{ fontSize: '1.75rem', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>Owner Admin Login</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
+            Enter authorized studio credentials to manage rates, portfolio, and appointments.
           </p>
         </div>
 
         {authError && (
           <div style={{
-            background: 'rgba(231,76,60,0.15)',
-            border: '1px solid rgba(231,76,60,0.4)',
-            color: '#e74c3c',
-            padding: '0.8rem 1rem',
+            background: 'rgba(235, 87, 87, 0.1)',
+            border: '1px solid rgba(235, 87, 87, 0.3)',
+            color: '#EB5757',
+            padding: '0.75rem 0.9rem',
             borderRadius: '8px',
-            fontSize: '0.88rem',
+            fontSize: '0.85rem',
             marginBottom: '1.25rem',
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem'
           }}>
-            <AlertCircle size={18} />
+            <AlertCircle size={16} />
             <span>{authError}</span>
           </div>
         )}
@@ -66,12 +67,12 @@ export const AdminLoginModal = () => {
           <div className="form-group">
             <label className="form-label">Username *</label>
             <div style={{ position: 'relative' }}>
-              <User size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <User size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input
                 type="text"
                 required
                 className="form-control"
-                style={{ paddingLeft: '2.8rem' }}
+                style={{ paddingLeft: '2.6rem' }}
                 placeholder="Enter username"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
@@ -79,15 +80,15 @@ export const AdminLoginModal = () => {
             </div>
           </div>
 
-          <div className="form-group" style={{ marginBottom: '1.75rem' }}>
+          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
             <label className="form-label">Password *</label>
             <div style={{ position: 'relative' }}>
-              <Lock size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <Lock size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
                 className="form-control"
-                style={{ paddingLeft: '2.8rem', paddingRight: '2.8rem' }}
+                style={{ paddingLeft: '2.6rem', paddingRight: '2.6rem' }}
                 placeholder="Enter admin password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
@@ -95,9 +96,9 @@ export const AdminLoginModal = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}
+                style={{ position: 'absolute', right: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -105,16 +106,12 @@ export const AdminLoginModal = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="btn btn-gold"
-            style={{ width: '100%', padding: '0.95rem', fontSize: '1.05rem' }}
+            className="btn btn-rose"
+            style={{ width: '100%', padding: '0.85rem', fontSize: '0.98rem' }}
           >
-            {isSubmitting ? 'Authenticating Securely...' : 'Authenticate & Access Admin'} <ArrowRight size={18} />
+            {isSubmitting ? 'Authenticating...' : 'Sign In to Admin'} <ArrowRight size={16} />
           </button>
         </form>
-
-        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '1.5rem' }}>
-          🔒 Passwords are validated securely via backend bcrypt hashing.
-        </div>
       </div>
     </div>
   );

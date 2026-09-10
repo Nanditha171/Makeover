@@ -20,7 +20,12 @@ import {
   INITIAL_POLICIES,
   INITIAL_BOOKINGS,
   INITIAL_ENQUIRIES,
-  INITIAL_BLOCKED_SLOTS
+  INITIAL_BLOCKED_SLOTS,
+  INITIAL_ARTISTS,
+  INITIAL_PRODUCTS,
+  INITIAL_REVIEWS,
+  INITIAL_ADMIN_USERS,
+  INITIAL_MAINTENANCE_MODE
 } from '../src/data/initialData.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -50,7 +55,12 @@ let db = {
   policies: INITIAL_POLICIES,
   bookings: INITIAL_BOOKINGS,
   enquiries: INITIAL_ENQUIRIES,
-  blockedSlots: INITIAL_BLOCKED_SLOTS
+  blockedSlots: INITIAL_BLOCKED_SLOTS,
+  artists: INITIAL_ARTISTS,
+  products: INITIAL_PRODUCTS,
+  reviews: INITIAL_REVIEWS,
+  adminUsers: INITIAL_ADMIN_USERS,
+  maintenanceMode: INITIAL_MAINTENANCE_MODE
 };
 
 // Try reading db.json if exists in root or /tmp
