@@ -44,7 +44,28 @@ export const AppProvider = ({ children }) => {
   const [activeTab, setActiveTabState] = useState(getInitialTab);
   const [userRole, setUserRole] = useState('customer'); // 'customer' | 'admin'
 
+  // Admin Auth Session (Starts locked; requires explicit credential authentication)
+  const [adminToken, setAdminToken] = useState('');
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [authError, setAuthError] = useState('');
+
+  // Lock Admin Portal on Exit / Purge Session
+  const lockAdminSession = () => {
+    setAdminToken('');
+    setIsAdminAuthenticated(false);
+    setUserRole('customer');
+    setAuthError('');
+    try {
+      localStorage.removeItem('aura_admin_token');
+      sessionStorage.removeItem('aura_admin_token');
+    } catch {}
+  };
+
   const setActiveTab = (tab) => {
+    // Automatically lock admin portal if navigating away from admin to any other page
+    if ((activeTab === 'admin' || activeTab === 'admin-login') && tab !== 'admin' && tab !== 'admin-login') {
+      lockAdminSession();
+    }
     setActiveTabState(tab);
     try {
       if (window.location.hash !== `#${tab}`) {
@@ -59,7 +80,13 @@ export const AppProvider = ({ children }) => {
       try {
         const hash = window.location.hash.replace('#', '').trim();
         if (hash && validTabs.includes(hash)) {
-          setActiveTabState(hash);
+          setActiveTabState(prevTab => {
+            // Automatically lock admin portal if navigating away from admin route via URL / back / forward
+            if ((prevTab === 'admin' || prevTab === 'admin-login') && hash !== 'admin' && hash !== 'admin-login') {
+              lockAdminSession();
+            }
+            return hash;
+          });
         }
       } catch {}
     };
@@ -67,11 +94,6 @@ export const AppProvider = ({ children }) => {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
-
-  // Admin Auth Session
-  const [adminToken, setAdminToken] = useState(() => localStorage.getItem('aura_admin_token') || '');
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(!!localStorage.getItem('aura_admin_token'));
-  const [authError, setAuthError] = useState('');
 
   // Toast Notification state
   const [toastMessage, setToastMessage] = useState('');
@@ -287,8 +309,9 @@ export const AppProvider = ({ children }) => {
   const adminLogin = async (username, password) => {
     setAuthError('');
     if (!username || !password) {
-      setAuthError('Please enter both username and password.');
-      return { success: false, error: 'Please enter both username and password.' };
+      const errorMsg = 'Please enter both username and password.';
+      setAuthError(errorMsg);
+      return { success: false, error: errorMsg };
     }
 
     try {
@@ -307,10 +330,17 @@ export const AppProvider = ({ children }) => {
       }
 
       setAdminToken(data.token);
-      localStorage.setItem('aura_admin_token', data.token);
+      try {
+        localStorage.setItem('aura_admin_token', data.token);
+      } catch {}
       setIsAdminAuthenticated(true);
       setUserRole('admin');
-      setActiveTab('admin');
+      setActiveTabState('admin');
+      try {
+        if (window.location.hash !== '#admin') {
+          window.location.hash = 'admin';
+        }
+      } catch {}
       showToast('Admin login successful! Welcome back.');
       return { success: true };
     } catch (err) {
@@ -318,10 +348,17 @@ export const AppProvider = ({ children }) => {
       if (username === 'Makeup' && password === 'Nanduj2803') {
         const dummyToken = 'local_admin_session_token';
         setAdminToken(dummyToken);
-        localStorage.setItem('aura_admin_token', dummyToken);
+        try {
+          localStorage.setItem('aura_admin_token', dummyToken);
+        } catch {}
         setIsAdminAuthenticated(true);
         setUserRole('admin');
-        setActiveTab('admin');
+        setActiveTabState('admin');
+        try {
+          if (window.location.hash !== '#admin') {
+            window.location.hash = 'admin';
+          }
+        } catch {}
         showToast('Admin authentication verified.');
         return { success: true };
       }
@@ -337,12 +374,14 @@ export const AppProvider = ({ children }) => {
       await fetch('/api/admin/logout', { method: 'POST' });
     } catch (e) {}
 
-    setAdminToken('');
-    localStorage.removeItem('aura_admin_token');
-    setIsAdminAuthenticated(false);
-    setUserRole('customer');
-    setActiveTab('home');
-    showToast('Logged out of Admin session.');
+    lockAdminSession();
+    setActiveTabState('home');
+    try {
+      if (window.location.hash !== '#home') {
+        window.location.hash = 'home';
+      }
+    } catch {}
+    showToast('Admin portal locked & logged out.');
   };
 
   // Price Formatter Helper
@@ -762,6 +801,8 @@ export const AppProvider = ({ children }) => {
       toastMessage,
       adminLogin,
       adminLogout,
+      lockAdminSession,
+      lockAdminPortal: lockAdminSession,
       stats,
       setStats: saveStats,
       salonInfo,
