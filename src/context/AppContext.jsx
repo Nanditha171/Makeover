@@ -20,6 +20,15 @@ import {
   INITIAL_ADMIN_USERS,
   INITIAL_MAINTENANCE_MODE
 } from '../data/initialData';
+import {
+  subscribeToAuthChanges,
+  loginWithEmail,
+  registerWithEmail,
+  loginWithGoogle,
+  logoutUser,
+  resetPassword,
+  isFirebaseConfigured
+} from '../firebase/authService';
 
 const AppContext = createContext();
 
@@ -48,6 +57,51 @@ export const AppProvider = ({ children }) => {
   const [adminToken, setAdminToken] = useState('');
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [authError, setAuthError] = useState('');
+
+  // Firebase Customer Authentication State
+  const [customerUser, setCustomerUser] = useState(null);
+  const [customerAuthModalOpen, setCustomerAuthModalOpen] = useState(false);
+
+  // Subscribe to Firebase Auth changes on Mount
+  useEffect(() => {
+    const unsubscribe = subscribeToAuthChanges((user) => {
+      setCustomerUser(user);
+    });
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, []);
+
+  const openCustomerAuthModal = () => setCustomerAuthModalOpen(true);
+  const closeCustomerAuthModal = () => setCustomerAuthModalOpen(false);
+
+  const loginCustomer = async (email, password) => {
+    const res = await loginWithEmail(email, password);
+    if (res.success && res.user) setCustomerUser(res.user);
+    return res;
+  };
+
+  const registerCustomer = async (email, password, displayName) => {
+    const res = await registerWithEmail(email, password, displayName);
+    if (res.success && res.user) setCustomerUser(res.user);
+    return res;
+  };
+
+  const loginCustomerWithGoogle = async () => {
+    const res = await loginWithGoogle();
+    if (res.success && res.user) setCustomerUser(res.user);
+    return res;
+  };
+
+  const logoutCustomer = async () => {
+    await logoutUser();
+    setCustomerUser(null);
+    showToast('You have been signed out.');
+  };
+
+  const resetCustomerPassword = async (email) => {
+    return await resetPassword(email);
+  };
 
   // Lock Admin Portal on Exit / Purge Session
   const lockAdminSession = () => {
@@ -420,6 +474,8 @@ export const AppProvider = ({ children }) => {
       createdDate: new Date().toISOString().split('T')[0],
       status: 'Confirmed',
       paymentStatus: 'Paid (Advance)',
+      userId: customerUser?.uid || null,
+      userEmail: customerUser?.email || bookingData.email || null,
       ...bookingData
     };
 
@@ -794,6 +850,16 @@ export const AppProvider = ({ children }) => {
       setActiveTab,
       userRole,
       setUserRole,
+      customerUser,
+      customerAuthModalOpen,
+      openCustomerAuthModal,
+      closeCustomerAuthModal,
+      loginCustomer,
+      registerCustomer,
+      loginCustomerWithGoogle,
+      logoutCustomer,
+      resetCustomerPassword,
+      isFirebaseConfigured,
       adminToken,
       isAdminAuthenticated,
       authError,

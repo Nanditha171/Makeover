@@ -1,10 +1,18 @@
 // src/components/common/Header.jsx
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Sparkles, Calendar, Menu, X, User, ShieldCheck } from 'lucide-react';
+import { Sparkles, Calendar, Menu, X, User, ShieldCheck, LogIn, LogOut } from 'lucide-react';
 
 export const Header = () => {
-  const { activeTab, setActiveTab, startBooking, isAdminAuthenticated } = useApp();
+  const {
+    activeTab,
+    setActiveTab,
+    startBooking,
+    isAdminAuthenticated,
+    customerUser,
+    openCustomerAuthModal,
+    logoutCustomer
+  } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -20,6 +28,10 @@ export const Header = () => {
     setActiveTab(id);
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleLogout = async () => {
+    await logoutCustomer();
   };
 
   return (
@@ -49,7 +61,59 @@ export const Header = () => {
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
+            {customerUser ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span
+                  style={{
+                    fontSize: '0.75rem',
+                    color: 'var(--primary-rose-dark)',
+                    fontWeight: '600',
+                    maxWidth: '120px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                  title={customerUser.email}
+                >
+                  Hi, {customerUser.displayName || customerUser.email.split('@')[0]}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  title="Sign Out"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.2rem',
+                    color: 'var(--text-muted)',
+                    fontSize: '0.75rem',
+                    padding: '0.1rem 0.35rem',
+                    borderRadius: '4px',
+                    border: '1px solid var(--border-subtle)'
+                  }}
+                >
+                  <LogOut size={11} /> <span>Sign Out</span>
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => openCustomerAuthModal('login')}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.3rem',
+                  color: 'var(--primary-rose-dark)',
+                  fontWeight: '600',
+                  fontSize: '0.78rem',
+                  background: 'rgba(212, 106, 134, 0.1)',
+                  padding: '0.18rem 0.55rem',
+                  borderRadius: '100px'
+                }}
+              >
+                <LogIn size={12} /> <span>Sign In / Register</span>
+              </button>
+            )}
+
             <button
               onClick={() => handleNavClick('my-account')}
               style={{
@@ -203,6 +267,41 @@ export const Header = () => {
               {activeTab === item.id && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--primary-rose)' }} />}
             </button>
           ))}
+
+          {/* Customer Auth in Mobile Drawer */}
+          <div style={{
+            background: 'var(--bg-secondary)',
+            borderRadius: '8px',
+            padding: '0.75rem',
+            marginTop: '0.25rem',
+            border: '1px solid var(--border-subtle)'
+          }}>
+            {customerUser ? (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Logged in as</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-primary)' }}>
+                    {customerUser.displayName || customerUser.email}
+                  </div>
+                </div>
+                <button
+                  onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+                  className="btn btn-outline-white btn-sm"
+                  style={{ fontSize: '0.75rem', padding: '0.3rem 0.6rem' }}
+                >
+                  <LogOut size={12} /> Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { openCustomerAuthModal('login'); setMobileMenuOpen(false); }}
+                className="btn btn-rose btn-sm"
+                style={{ width: '100%', fontSize: '0.84rem' }}
+              >
+                <LogIn size={14} /> Sign In / Register
+              </button>
+            )}
+          </div>
 
           <button
             onClick={() => handleNavClick('my-account')}

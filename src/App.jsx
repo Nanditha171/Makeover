@@ -6,6 +6,7 @@ import { Footer } from './components/common/Footer';
 import { BookingConfirmationModal } from './components/common/BookingConfirmationModal';
 import { PaymentModal } from './components/common/PaymentModal';
 import { LightboxModal } from './components/common/LightboxModal';
+import { CustomerAuthModal } from './components/common/CustomerAuthModal';
 
 import { HomePage } from './components/home/HomePage';
 import { AboutPage } from './components/about/AboutPage';
@@ -99,6 +100,7 @@ const MainContent = () => {
       <BookingConfirmationModal />
       <PaymentModal />
       <LightboxModal />
+      <CustomerAuthModal />
     </div>
   );
 };

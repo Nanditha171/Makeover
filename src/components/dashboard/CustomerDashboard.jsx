@@ -1,10 +1,20 @@
 // src/components/dashboard/CustomerDashboard.jsx
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Calendar, Clock, MapPin, XCircle, FileText, User, Search, ArrowRight } from 'lucide-react';
+import { Calendar, Clock, MapPin, XCircle, FileText, User, Search, ArrowRight, LogIn, LogOut, CheckCircle, ShieldCheck } from 'lucide-react';
 
 export const CustomerDashboard = () => {
-  const { bookings, myBookingIds, updateBookingStatus, formatPrice, openModal, setActiveTab } = useApp();
+  const {
+    bookings,
+    myBookingIds,
+    updateBookingStatus,
+    formatPrice,
+    openModal,
+    setActiveTab,
+    customerUser,
+    openCustomerAuthModal,
+    logoutCustomer
+  } = useApp();
   const [searchPhone, setSearchPhone] = useState('');
 
   // Determine displayed bookings
@@ -14,8 +24,18 @@ export const CustomerDashboard = () => {
       const phoneMatch = b.phone && b.phone.toLowerCase().includes(q);
       const idMatch = b.id && b.id.toLowerCase().includes(q);
       const nameMatch = b.customerName && b.customerName.toLowerCase().includes(q);
-      return phoneMatch || idMatch || nameMatch;
+      const emailMatch = b.userEmail && b.userEmail.toLowerCase().includes(q);
+      return phoneMatch || idMatch || nameMatch || emailMatch;
     }
+
+    // If customer is logged in, show their bookings matched by UID, Email, or local storage IDs
+    if (customerUser) {
+      const isAuthMatch = (b.userId && b.userId === customerUser.uid) ||
+        (b.userEmail && customerUser.email && b.userEmail.toLowerCase() === customerUser.email.toLowerCase());
+      const isLocalMatch = myBookingIds && myBookingIds.includes(b.id);
+      return isAuthMatch || isLocalMatch;
+    }
+
     return myBookingIds && myBookingIds.includes(b.id);
   });
 
@@ -30,11 +50,102 @@ export const CustomerDashboard = () => {
       <div className="container" style={{ maxWidth: '900px' }}>
         <div className="section-header">
           <span className="section-subtitle">Customer Portal</span>
-          <h2 className="section-title">My Bookings</h2>
+          <h2 className="section-title">My Bookings & Account</h2>
           <p className="section-description">
             View your upcoming salon appointments, home vanity services, booking invoices, and payment statuses.
           </p>
         </div>
+
+        {/* Auth State Banner */}
+        {customerUser ? (
+          <div className="glass-card" style={{
+            padding: '1.25rem 1.5rem',
+            marginBottom: '1.5rem',
+            background: 'linear-gradient(135deg, rgba(212, 106, 134, 0.1) 0%, rgba(255, 255, 255, 0.8) 100%)',
+            borderColor: 'var(--border-rose)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+              <div style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '50%',
+                background: 'var(--rose-gradient)',
+                color: '#FFFFFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: '700',
+                fontSize: '1.1rem',
+                flexShrink: 0
+              }}>
+                {(customerUser.displayName?.[0] || customerUser.email?.[0] || 'U').toUpperCase()}
+              </div>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-primary)', margin: 0 }}>
+                    {customerUser.displayName || 'Valued Customer'}
+                  </h4>
+                  <span className="badge badge-green" style={{ fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+                    <CheckCircle size={10} /> Authenticated
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  {customerUser.email}
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => logoutCustomer()}
+              className="btn btn-outline-rose btn-sm"
+              style={{ fontSize: '0.8rem' }}
+            >
+              <LogOut size={13} /> Sign Out
+            </button>
+          </div>
+        ) : (
+          <div className="glass-card" style={{
+            padding: '1.15rem 1.35rem',
+            marginBottom: '1.5rem',
+            background: 'rgba(212, 106, 134, 0.05)',
+            border: '1px dashed var(--primary-rose)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1rem'
+          }}>
+            <div style={{ minWidth: '240px', flex: 1 }}>
+              <div style={{ fontWeight: '600', color: 'var(--text-primary)', fontSize: '0.92rem', marginBottom: '0.15rem' }}>
+                Sign in to sync your bookings across devices
+              </div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                Create an account or sign in with Google to automatically track all your bridal and beauty sessions.
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => openCustomerAuthModal('login')}
+                className="btn btn-rose btn-sm"
+                style={{ fontSize: '0.82rem' }}
+              >
+                <LogIn size={13} /> Sign In
+              </button>
+              <button
+                onClick={() => openCustomerAuthModal('register')}
+                className="btn btn-outline-rose btn-sm"
+                style={{ fontSize: '0.82rem' }}
+              >
+                Create Account
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Lookup Bar */}
         <div className="glass-card" style={{ padding: '1.15rem', marginBottom: '1.75rem', display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -43,7 +154,7 @@ export const CustomerDashboard = () => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search by Phone Number or Booking ID (e.g. GLOW-1234)..."
+              placeholder="Search by Phone Number, Email, or Booking ID (e.g. GLOW-1234)..."
               value={searchPhone}
               onChange={e => setSearchPhone(e.target.value)}
               style={{ paddingLeft: '2.5rem' }}
