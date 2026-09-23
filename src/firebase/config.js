@@ -6,47 +6,63 @@ import { getAnalytics, isSupported } from 'firebase/analytics';
 /**
  * Firebase Configuration Object
  * Reads configuration from Vite environment variables (VITE_FIREBASE_*)
- * with safe fallbacks for development.
+ * with project defaults for live deployment fallback.
  */
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDummyKeyForDevelopmentAuraMakeup",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "aura-beauty-makeup.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "aura-beauty-makeup",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "aura-beauty-makeup.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789012",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789012:web:abcdef123456",
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || ""
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCmHc384j73D7GwV6PLipaDt1_gauHDeDs",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "makeup-90bc3.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "makeup-90bc3",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "makeup-90bc3.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1011857524421",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1011857524421:web:9ddad7815fd06ac86012ac",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-ESWKPSMBTL"
 };
 
-// Check if user has supplied custom production environment credentials
-export const isFirebaseConfigured = Boolean(
-  import.meta.env.VITE_FIREBASE_API_KEY &&
-  import.meta.env.VITE_FIREBASE_PROJECT_ID &&
-  !import.meta.env.VITE_FIREBASE_API_KEY.includes('Dummy')
-);
+export const isFirebaseConfigured = true;
 
-// Initialize Firebase App (singleton pattern)
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+// Initialize Firebase App safely
+let app = null;
+try {
+  app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+} catch (e) {
+  console.warn('Firebase initializeApp warning:', e);
+}
 
-// Initialize Firebase Authentication
-export const auth = getAuth(app);
+// Initialize Firebase Authentication safely
+let auth = null;
+try {
+  if (app) {
+    auth = getAuth(app);
+  }
+} catch (e) {
+  console.warn('Firebase getAuth warning:', e);
+}
 
-// Initialize Firebase Analytics if supported in this environment
+export { auth };
+
+// Initialize Firebase Analytics if supported
 let analytics = null;
-if (typeof window !== 'undefined' && firebaseConfig.measurementId) {
-  isSupported().then(yes => {
-    if (yes) {
-      analytics = getAnalytics(app);
-    }
-  }).catch(() => {});
+if (typeof window !== 'undefined' && app && firebaseConfig.measurementId) {
+  try {
+    isSupported().then(yes => {
+      if (yes) {
+        analytics = getAnalytics(app);
+      }
+    }).catch(() => {});
+  } catch (e) {}
 }
 
 export { analytics };
 
 // Google Auth Provider for social login
-export const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({
-  prompt: 'select_account'
-});
+let googleProvider = null;
+try {
+  googleProvider = new GoogleAuthProvider();
+  googleProvider.setCustomParameters({
+    prompt: 'select_account'
+  });
+} catch (e) {}
+
+export { googleProvider };
 
 export default app;

@@ -152,31 +152,49 @@ export const resetPassword = async (email) => {
  * Subscribe to Firebase Auth State Changes with persistence
  */
 export const subscribeToAuthChanges = (callback) => {
-  // Listen to live Firebase Auth state
-  const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-    if (firebaseUser) {
-      const user = {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Client',
-        photoURL: firebaseUser.photoURL || null
-      };
-      localStorage.setItem('aura_firebase_user_session', JSON.stringify(user));
-      callback(user);
-    } else {
-      // Check local session storage fallback if Firebase isn't configured with custom keys
-      try {
-        const localSession = localStorage.getItem('aura_firebase_user_session');
-        if (localSession && !isFirebaseConfigured) {
-          callback(JSON.parse(localSession));
-          return;
-        }
-      } catch {}
-      callback(null);
-    }
-  });
+  if (!auth) {
+    try {
+      const localSession = localStorage.getItem('aura_firebase_user_session');
+      if (localSession) {
+        callback(JSON.parse(localSession));
+      } else {
+        callback(null);
+      }
+    } catch {}
+    return () => {};
+  }
 
-  return unsubscribe;
+  try {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        const user = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Client',
+          photoURL: firebaseUser.photoURL || null
+        };
+        localStorage.setItem('aura_firebase_user_session', JSON.stringify(user));
+        callback(user);
+      } else {
+        try {
+          const localSession = localStorage.getItem('aura_firebase_user_session');
+          if (localSession && !isFirebaseConfigured) {
+            callback(JSON.parse(localSession));
+            return;
+          }
+        } catch {}
+        callback(null);
+      }
+    }, (error) => {
+      console.warn('onAuthStateChanged error:', error);
+      callback(null);
+    });
+
+    return unsubscribe;
+  } catch (err) {
+    console.warn('Failed to attach auth listener:', err);
+    return () => {};
+  }
 };
 
 /**
