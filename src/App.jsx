@@ -7,6 +7,7 @@ import { BookingConfirmationModal } from './components/common/BookingConfirmatio
 import { PaymentModal } from './components/common/PaymentModal';
 import { LightboxModal } from './components/common/LightboxModal';
 import { CustomerAuthModal } from './components/common/CustomerAuthModal';
+import { ClientAuthGate } from './components/auth/ClientAuthGate';
 
 import { HomePage } from './components/home/HomePage';
 import { AboutPage } from './components/about/AboutPage';
@@ -37,7 +38,23 @@ const AdminProtectedRoute = ({ children }) => {
 };
 
 const MainContent = () => {
-  const { activeTab, toastMessage } = useApp();
+  const { activeTab, toastMessage, isClientAuthenticated } = useApp();
+
+  const isAdminRoute = activeTab === 'admin' || activeTab === 'admin-login';
+
+  // Strict Access Gate: If not admin route and client is not verified & logged in, show Auth Gate
+  if (!isAdminRoute && !isClientAuthenticated) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-main)' }}>
+        <ClientAuthGate />
+        {toastMessage && (
+          <div className="toast-floating glass-card">
+            ✨ {toastMessage}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   const renderTab = () => {
     switch (activeTab) {
@@ -76,8 +93,6 @@ const MainContent = () => {
         return <HomePage />;
     }
   };
-
-  const isAdminRoute = activeTab === 'admin' || activeTab === 'admin-login';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-main)' }}>

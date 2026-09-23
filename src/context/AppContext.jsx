@@ -29,6 +29,14 @@ import {
   resetPassword,
   isFirebaseConfigured
 } from '../firebase/authService';
+import {
+  getAllUsers,
+  saveUserProfile,
+  getUserProfile,
+  markUserAsVerified,
+  generateOTP,
+  verifyEnteredOTP
+} from '../firebase/userService';
 
 const AppContext = createContext();
 
@@ -58,49 +66,238 @@ export const AppProvider = ({ children }) => {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [authError, setAuthError] = useState('');
 
-  // Firebase Customer Authentication State
-  const [customerUser, setCustomerUser] = useState(null);
+  // Firebase Customer Authentication & Verification State
+  const [customerUser, setCustomerUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_verified_customer_session');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [pendingVerificationUser, setPendingVerificationUser] = useState(null);
   const [customerAuthModalOpen, setCustomerAuthModalOpen] = useState(false);
+  const [registeredClients, setRegisteredClients] = useState([]);
+
+  // Load all registered client history for Admin portal & lookup
+  const refreshRegisteredClients = async () => {
+    try {
+      const all = await getAllUsers();
+      setRegisteredClients(all);
+    } catch (err) {
+      console.error('Error fetching registered clients:', err);
+    }
+  };
+
+  useEffect(() => {
+    refreshRegisteredClients();
+  }, []);
 
   // Subscribe to Firebase Auth changes on Mount
   useEffect(() => {
-    const unsubscribe = subscribeToAuthChanges((user) => {
-      setCustomerUser(user);
+    const unsubscribe = subscribeToAuthChanges(async (firebaseUser) => {
+      if (firebaseUser) {
+        // Fetch or create synced profile record
+        let profile = await getUserProfile(firebaseUser.uid || firebaseUser.email);
+        if (!profile) {
+          profile = await saveUserProfile({
+            uid: firebaseUser.uid,
+            fullName: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+            email: firebaseUser.email,
+            phone: '',
+            isVerified: true, // Auto-verify Google SSO users
+            authProvider: firebaseUser.email?.includes('gmail') ? 'google' : 'email'
+          });
+        }
+        if (profile.isVerified) {
+          setCustomerUser(profile);
+          localStorage.setItem('aura_verified_customer_session', JSON.stringify(profile));
+        } else {
+          setPendingVerificationUser(profile);
+          setCustomerUser(null);
+          localStorage.removeItem('aura_verified_customer_session');
+        }
+      } else {
+        const saved = localStorage.getItem('aura_verified_customer_session');
+        if (saved) {
+          try {
+            setCustomerUser(JSON.parse(saved));
+          } catch {
+            setCustomerUser(null);
+          }
+        } else {
+          setCustomerUser(null);
+        }
+      }
+      refreshRegisteredClients();
     });
+
     return () => {
       if (typeof unsubscribe === 'function') unsubscribe();
     };
   }, []);
 
+  // Client is considered fully authenticated ONLY if user exists AND isVerified is true
+  const isClientAuthenticated = Boolean(customerUser && customerUser.isVerified);
+
   const openCustomerAuthModal = () => setCustomerAuthModalOpen(true);
   const closeCustomerAuthModal = () => setCustomerAuthModalOpen(false);
 
-  const loginCustomer = async (email, password) => {
-    const res = await loginWithEmail(email, password);
-    if (res.success && res.user) setCustomerUser(res.user);
-    return res;
+  // Send / Generate OTP
+  const sendOTP = (identifier) => {
+    return generateOTP(identifier);
   };
 
-  const registerCustomer = async (email, password, displayName) => {
-    const res = await registerWithEmail(email, password, displayName);
-    if (res.success && res.user) setCustomerUser(res.user);
+  // Register New Client
+  const registerNewClient = async ({ fullName, email, phone, password }) => {
+    try {
+      // 1. Register with Firebase Auth
+      const authResult = await registerWithEmail(email, password, fullName);
+      if (!authResult.success) {
+        return { success: false, error: authResult.error };
+      }
+
+      // 2. Create User Profile with isVerified: false until OTP check
+      const newProfile = {
+        uid: authResult.user.uid || `user_${Date.now()}`,
+        fullName,
+        email,
+        phone,
+        createdAt: new Date().toISOString(),
+        isVerified: false,
+        authProvider: 'email',
+        status: 'Pending Verification',
+        role: 'client'
+      };
+
+      const saved = await saveUserProfile(newProfile);
+      setPendingVerificationUser(saved);
+      refreshRegisteredClients();
+
+      return { success: true, user: saved };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  // Verify OTP & Grant Access
+  const verifyClientOTP = async (identifier, enteredOTP) => {
+    const result = verifyEnteredOTP(identifier, enteredOTP);
+    if (!result.success) {
+      return result;
+    }
+
+    // Mark user verified in DB
+    const verifiedUser = await markUserAsVerified(identifier);
+    if (verifiedUser) {
+      setCustomerUser(verifiedUser);
+      setPendingVerificationUser(null);
+      localStorage.setItem('aura_verified_customer_session', JSON.stringify(verifiedUser));
+      refreshRegisteredClients();
+      showToast('Account verified! Welcome to Aura Beauty Studio.');
+      return { success: true, user: verifiedUser };
+    }
+
+    // If identifier was pending session
+    if (pendingVerificationUser) {
+      const updated = {
+        ...pendingVerificationUser,
+        isVerified: true,
+        verifiedAt: new Date().toISOString(),
+        status: 'Active'
+      };
+      await saveUserProfile(updated);
+      setCustomerUser(updated);
+      setPendingVerificationUser(null);
+      localStorage.setItem('aura_verified_customer_session', JSON.stringify(updated));
+      refreshRegisteredClients();
+      showToast('Account verified! Welcome to Aura Beauty Studio.');
+      return { success: true, user: updated };
+    }
+
+    return { success: true };
+  };
+
+  const loginCustomer = async (email, password) => {
+    const res = await loginWithEmail(email, password);
+    if (res.success && res.user) {
+      const profile = await getUserProfile(res.user.uid || email);
+      if (profile) {
+        if (profile.isVerified) {
+          setCustomerUser(profile);
+          localStorage.setItem('aura_verified_customer_session', JSON.stringify(profile));
+          showToast(`Welcome back, ${profile.fullName || profile.email}!`);
+          return { success: true, user: profile };
+        } else {
+          setPendingVerificationUser(profile);
+          return { success: true, user: profile };
+        }
+      } else {
+        const newProfile = await saveUserProfile({
+          uid: res.user.uid,
+          fullName: res.user.displayName || email.split('@')[0],
+          email: res.user.email,
+          phone: '',
+          isVerified: true,
+          authProvider: 'email'
+        });
+        setCustomerUser(newProfile);
+        localStorage.setItem('aura_verified_customer_session', JSON.stringify(newProfile));
+        return { success: true, user: newProfile };
+      }
+    }
     return res;
   };
 
   const loginCustomerWithGoogle = async () => {
     const res = await loginWithGoogle();
-    if (res.success && res.user) setCustomerUser(res.user);
+    if (res.success && res.user) {
+      let profile = await getUserProfile(res.user.uid || res.user.email);
+      if (!profile) {
+        profile = await saveUserProfile({
+          uid: res.user.uid,
+          fullName: res.user.displayName || 'Google User',
+          email: res.user.email,
+          phone: '',
+          isVerified: true,
+          authProvider: 'google',
+          status: 'Active'
+        });
+      } else {
+        profile.lastLoginAt = new Date().toISOString();
+        await saveUserProfile(profile);
+      }
+      setCustomerUser(profile);
+      localStorage.setItem('aura_verified_customer_session', JSON.stringify(profile));
+      refreshRegisteredClients();
+      showToast(`Signed in as ${profile.fullName || profile.email}`);
+      return { success: true, user: profile };
+    }
     return res;
   };
 
   const logoutCustomer = async () => {
     await logoutUser();
     setCustomerUser(null);
+    setPendingVerificationUser(null);
+    localStorage.removeItem('aura_verified_customer_session');
     showToast('You have been signed out.');
   };
 
   const resetCustomerPassword = async (email) => {
     return await resetPassword(email);
+  };
+
+  const deleteClientAccount = async (uidOrEmail) => {
+    try {
+      const all = await getAllUsers();
+      const filtered = all.filter(u => u.uid !== uidOrEmail && u.email !== uidOrEmail);
+      localStorage.setItem('aura_registered_users_db', JSON.stringify(filtered));
+      setRegisteredClients(filtered);
+      showToast('Client account record removed.');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Lock Admin Portal on Exit / Purge Session
@@ -851,14 +1048,23 @@ export const AppProvider = ({ children }) => {
       userRole,
       setUserRole,
       customerUser,
+      isClientAuthenticated,
+      pendingVerificationUser,
+      setPendingVerificationUser,
       customerAuthModalOpen,
       openCustomerAuthModal,
       closeCustomerAuthModal,
       loginCustomer,
       registerCustomer,
+      registerNewClient,
+      sendOTP,
+      verifyClientOTP,
       loginCustomerWithGoogle,
       logoutCustomer,
       resetCustomerPassword,
+      registeredClients,
+      refreshRegisteredClients,
+      deleteClientAccount,
       isFirebaseConfigured,
       adminToken,
       isAdminAuthenticated,
