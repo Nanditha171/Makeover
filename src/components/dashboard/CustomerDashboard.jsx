@@ -7,9 +7,7 @@ export const CustomerDashboard = () => {
   const { bookings, myBookingIds, updateBookingStatus, formatPrice, openModal, setActiveTab } = useApp();
   const [searchPhone, setSearchPhone] = useState('');
 
-  // Determine displayed bookings:
-  // 1. If user entered a search query (phone or booking ID), filter by that.
-  // 2. Otherwise, filter by bookings placed in this device session (myBookingIds).
+  // Determine displayed bookings
   const displayedBookings = bookings.filter(b => {
     if (searchPhone.trim().length > 0) {
       const q = searchPhone.trim().toLowerCase();
@@ -18,7 +16,6 @@ export const CustomerDashboard = () => {
       const nameMatch = b.customerName && b.customerName.toLowerCase().includes(q);
       return phoneMatch || idMatch || nameMatch;
     }
-    // Default: Show bookings belonging to current user device
     return myBookingIds && myBookingIds.includes(b.id);
   });
 
@@ -40,13 +37,13 @@ export const CustomerDashboard = () => {
         </div>
 
         {/* Lookup Bar */}
-        <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <div style={{ position: 'relative', flex: 1, minWidth: '240px' }}>
+        <div className="glass-card" style={{ padding: '1.15rem', marginBottom: '1.75rem', display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
             <Search size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               type="text"
               className="form-control"
-              placeholder="Look up appointment by Phone Number or Booking ID (e.g. GLOW-1234)..."
+              placeholder="Search by Phone Number or Booking ID (e.g. GLOW-1234)..."
               value={searchPhone}
               onChange={e => setSearchPhone(e.target.value)}
               style={{ paddingLeft: '2.5rem' }}
@@ -88,10 +85,10 @@ export const CustomerDashboard = () => {
             {displayedBookings.map(b => {
               const isCancelled = b.status === 'Cancelled';
               return (
-                <div key={b.id} className="glass-card" style={{ padding: '1.5rem', borderColor: isCancelled ? 'rgba(231,76,60,0.25)' : 'var(--border-rose)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.85rem', marginBottom: '0.85rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.85rem' }}>
+                <div key={b.id} className="glass-card" style={{ padding: '1.35rem', borderColor: isCancelled ? 'rgba(231,76,60,0.25)' : 'var(--border-rose)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.85rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.85rem' }}>
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.35rem' }}>
                         <span className="badge badge-rose">#{b.id}</span>
                         <span className={`badge ${isCancelled ? 'badge-red' : 'badge-green'}`}>
                           {b.status}
@@ -100,54 +97,54 @@ export const CustomerDashboard = () => {
                           {b.type === 'home' ? 'Home Service' : 'Salon Studio'}
                         </span>
                       </div>
-                      <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)' }}>{b.serviceName}</h3>
+                      <h3 style={{ fontSize: '1.18rem', color: 'var(--text-primary)' }}>{b.serviceName}</h3>
                     </div>
 
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Total Amount</span>
-                      <div style={{ fontSize: '1.3rem', fontWeight: '700', color: 'var(--primary-rose-dark)' }}>
+                    <div>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Total Amount</span>
+                      <div style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--primary-rose-dark)' }}>
                         {formatPrice(b.totalPrice)}
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid-3" style={{ gap: '0.75rem', fontSize: '0.88rem', marginBottom: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <Calendar size={15} style={{ color: 'var(--primary-rose-dark)' }} />
+                  <div className="customer-booking-details-grid" style={{ marginBottom: '0.85rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.86rem' }}>
+                      <Calendar size={14} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
                       <span>Date: <strong>{b.date}</strong></span>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <Clock size={15} style={{ color: 'var(--primary-rose-dark)' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.86rem' }}>
+                      <Clock size={14} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
                       <span>Time: <strong>{b.timeSlot}</strong></span>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <User size={15} style={{ color: 'var(--primary-rose-dark)' }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.86rem' }}>
+                      <User size={14} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
                       <span>Client: <strong>{b.customerName}</strong></span>
                     </div>
                   </div>
 
                   {b.type === 'home' && b.address && (
-                    <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', background: 'var(--bg-secondary)', padding: '0.65rem 0.85rem', borderRadius: '6px', marginBottom: '1rem', border: '1px solid var(--border-subtle)' }}>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', background: 'var(--bg-secondary)', padding: '0.6rem 0.75rem', borderRadius: '6px', marginBottom: '0.85rem', border: '1px solid var(--border-subtle)', wordBreak: 'break-word' }}>
                       <MapPin size={13} style={{ display: 'inline', marginRight: '0.35rem', color: 'var(--primary-rose)' }} />
                       <strong>Address:</strong> {b.address} {b.landmark ? `(${b.landmark})` : ''}
                     </div>
                   )}
 
                   {/* Financial Breakdown */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(212,106,134,0.06)', padding: '0.65rem 0.85rem', borderRadius: '6px', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem', background: 'rgba(212,106,134,0.06)', padding: '0.65rem 0.85rem', borderRadius: '6px', marginBottom: '1rem', fontSize: '0.84rem' }}>
                     <span>Advance Paid: <strong style={{ color: '#2ecc71' }}>{formatPrice(b.advancePaid)}</strong></span>
                     <span>Remaining Balance: <strong style={{ color: 'var(--primary-rose-dark)' }}>{formatPrice(b.remainingAmount)}</strong></span>
                   </div>
 
                   {/* Actions */}
-                  <div style={{ display: 'flex', gap: '0.65rem', justifyContent: 'flex-end' }}>
-                    <button onClick={() => openModal('confirmation', b)} className="btn btn-outline-rose btn-sm">
+                  <div className="btn-group-responsive" style={{ justifyContent: 'flex-end' }}>
+                    <button onClick={() => openModal('confirmation', b)} className="btn btn-outline-rose btn-sm" style={{ flex: 'initial' }}>
                       <FileText size={14} /> View Receipt / Invoice
                     </button>
                     {!isCancelled && (
-                      <button onClick={() => handleCancel(b.id)} className="btn btn-outline-white btn-sm" style={{ color: '#e74c3c' }}>
+                      <button onClick={() => handleCancel(b.id)} className="btn btn-outline-white btn-sm" style={{ flex: 'initial', color: '#e74c3c' }}>
                         <XCircle size={14} /> Cancel Booking
                       </button>
                     )}
@@ -158,6 +155,23 @@ export const CustomerDashboard = () => {
           </div>
         )}
       </div>
+
+      <style>{`
+        .customer-booking-details-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.65rem;
+        }
+
+        @media (max-width: 640px) {
+          .customer-booking-details-grid {
+            grid-template-columns: 1fr;
+          }
+          .customer-dashboard .btn-group-responsive .btn {
+            width: 100%;
+          }
+        }
+      `}</style>
     </div>
   );
 };

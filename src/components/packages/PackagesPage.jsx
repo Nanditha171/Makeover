@@ -33,14 +33,14 @@ export const PackagesPage = ({ isEmbedded = false }) => {
             </button>
           </div>
         ) : (
-          <div className="grid-3" style={{ gap: '1.75rem', marginBottom: isEmbedded ? '2rem' : '4rem' }}>
+          <div className="grid-3" style={{ marginBottom: isEmbedded ? '2rem' : '3.5rem' }}>
             {packages.map(pkg => (
               <div key={pkg.id} className="glass-card" style={{
-                padding: '2rem',
+                padding: '1.65rem 1.4rem',
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
-                justify: 'space-between',
+                justifyContent: 'space-between',
                 borderColor: pkg.badge === 'Most Booked' ? 'var(--primary-rose)' : 'var(--border-subtle)'
               }}>
                 {pkg.badge && (
@@ -50,26 +50,26 @@ export const PackagesPage = ({ isEmbedded = false }) => {
                 )}
 
                 <div>
-                  <h3 style={{ fontSize: '1.45rem', textAlign: 'center', marginBottom: '0.6rem', color: 'var(--text-primary)' }}>{pkg.name}</h3>
+                  <h3 style={{ fontSize: '1.35rem', textAlign: 'center', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{pkg.name}</h3>
                   <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                    <span style={{ fontSize: '2.2rem', fontWeight: '800', color: 'var(--primary-rose-dark)' }}>
+                    <span style={{ fontSize: '2rem', fontWeight: '800', color: 'var(--primary-rose-dark)' }}>
                       {formatPrice(pkg.price)}
                     </span>
                     {pkg.originalPrice && (
-                      <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', marginLeft: '0.6rem', fontSize: '1.05rem' }}>
+                      <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', marginLeft: '0.6rem', fontSize: '1rem' }}>
                         {formatPrice(pkg.originalPrice)}
                       </span>
                     )}
                   </div>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', textAlign: 'center', lineHeight: 1.5 }}>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', textAlign: 'center', lineHeight: 1.5 }}>
                     {pkg.description}
                   </p>
 
-                  <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.15rem', marginBottom: '1.5rem' }}>
-                    <h5 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--primary-rose-dark)', marginBottom: '0.75rem', letterSpacing: '0.04em', fontWeight: '700' }}>
+                  <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem', marginBottom: '1.25rem' }}>
+                    <h5 style={{ fontSize: '0.78rem', textTransform: 'uppercase', color: 'var(--primary-rose-dark)', marginBottom: '0.65rem', letterSpacing: '0.04em', fontWeight: '700' }}>
                       What's Included:
                     </h5>
-                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.88rem' }}>
+                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.45rem', fontSize: '0.86rem' }}>
                       {pkg.inclusions.map((inc, i) => (
                         <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: 'var(--text-secondary)' }}>
                           <CheckCircle2 size={15} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
@@ -80,7 +80,7 @@ export const PackagesPage = ({ isEmbedded = false }) => {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div className="btn-group-responsive">
                   <button onClick={() => startBooking(pkg, 'salon')} className="btn btn-rose btn-sm" style={{ flex: 1 }}>
                     Book Salon
                   </button>

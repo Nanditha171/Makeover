@@ -58,10 +58,10 @@ export const CustomPackageBuilder = ({ isEmbedded = false }) => {
           </div>
         )}
 
-        <div className="grid-2" style={{ gap: '2.5rem', alignItems: 'flex-start' }}>
+        <div className="grid-2" style={{ alignItems: 'flex-start' }}>
           {/* Left Column: Services Selection Menu */}
           <div>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>1. Select Services to Bundle:</h3>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.85rem', color: 'var(--text-primary)' }}>1. Select Services to Bundle:</h3>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
               {services.map(srv => {
@@ -72,16 +72,18 @@ export const CustomPackageBuilder = ({ isEmbedded = false }) => {
                     onClick={() => toggleService(srv.id)}
                     className="glass-card"
                     style={{
-                      padding: '0.85rem 1.15rem',
+                      padding: '0.85rem 1rem',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      gap: '0.75rem',
                       borderColor: isSelected ? 'var(--primary-rose)' : 'var(--border-subtle)',
-                      background: isSelected ? 'rgba(212,106,134,0.08)' : 'var(--bg-card)'
+                      background: isSelected ? 'rgba(212,106,134,0.08)' : 'var(--bg-card)',
+                      transition: 'all 0.2s ease'
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}>
                       <div style={{
                         width: '22px',
                         height: '22px',
@@ -91,18 +93,19 @@ export const CustomPackageBuilder = ({ isEmbedded = false }) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#FFFFFF'
+                        color: '#FFFFFF',
+                        flexShrink: 0
                       }}>
-                        {isSelected && <Check size={15} strokeWidth={3} />}
+                        {isSelected && <Check size={14} strokeWidth={3} />}
                       </div>
 
-                      <div>
-                        <h4 style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{srv.name}</h4>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{srv.category}</span>
+                      <div style={{ minWidth: 0 }}>
+                        <h4 style={{ fontSize: '0.92rem', color: 'var(--text-primary)', wordBreak: 'break-word' }}>{srv.name}</h4>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{srv.category}</span>
                       </div>
                     </div>
 
-                    <strong style={{ fontSize: '1rem', color: isSelected ? 'var(--primary-rose-dark)' : 'var(--text-secondary)' }}>
+                    <strong style={{ fontSize: '0.95rem', color: isSelected ? 'var(--primary-rose-dark)' : 'var(--text-secondary)', whiteSpace: 'nowrap', flexShrink: 0 }}>
                       {formatPrice(srv.price)}
                     </strong>
                   </div>
@@ -112,11 +115,11 @@ export const CustomPackageBuilder = ({ isEmbedded = false }) => {
           </div>
 
           {/* Right Column: Price Summary Card */}
-          <div style={{ position: 'sticky', top: '100px' }}>
-            <div className="glass-card" style={{ padding: '1.75rem', border: '1px solid var(--border-rose)' }}>
+          <div className="custom-builder-summary-col">
+            <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid var(--border-rose)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                 <Sparkles size={18} style={{ color: 'var(--primary-rose-dark)' }} />
-                <h3 style={{ fontSize: '1.25rem' }}>Custom Package Summary</h3>
+                <h3 style={{ fontSize: '1.2rem' }}>Custom Package Summary</h3>
               </div>
 
               <div className="form-group">
@@ -131,19 +134,19 @@ export const CustomPackageBuilder = ({ isEmbedded = false }) => {
               </div>
 
               {/* Selected Items List */}
-              <div style={{ marginBottom: '1.25rem', maxHeight: '180px', overflowY: 'auto', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.85rem' }}>
+              <div style={{ marginBottom: '1.15rem', maxHeight: '180px', overflowY: 'auto', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
                 <label className="form-label">Selected Services ({selectedServices.length})</label>
                 {selectedServices.map(s => (
-                  <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.35rem' }}>
+                  <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.84rem', marginBottom: '0.35rem', gap: '0.5rem' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>• {s.name}</span>
-                    <span>{formatPrice(s.price)}</span>
+                    <span style={{ whiteSpace: 'nowrap' }}>{formatPrice(s.price)}</span>
                   </div>
                 ))}
               </div>
 
               {/* Discount Banner */}
               {discountPercent > 0 ? (
-                <div className="badge badge-rose" style={{ width: '100%', padding: '0.5rem', justifyContent: 'center', marginBottom: '1rem', background: 'var(--rose-gradient)', color: '#FFFFFF', border: 'none' }}>
+                <div className="badge badge-rose" style={{ width: '100%', padding: '0.5rem', justifyContent: 'center', marginBottom: '1rem', background: 'var(--rose-gradient)', color: '#FFFFFF', border: 'none', textAlign: 'center' }}>
                   🎉 {discountPercent}% Bundle Discount (Saved {formatPrice(discountAmount)})
                 </div>
               ) : (
@@ -165,13 +168,13 @@ export const CustomPackageBuilder = ({ isEmbedded = false }) => {
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem', borderTop: '1px dashed var(--border-rose)' }}>
-                  <span style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-primary)' }}>Total Price:</span>
-                  <span style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--primary-rose-dark)' }}>{formatPrice(finalPrice)}</span>
+                  <span style={{ fontSize: '0.95rem', fontWeight: '700', color: 'var(--text-primary)' }}>Total Price:</span>
+                  <span style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--primary-rose-dark)' }}>{formatPrice(finalPrice)}</span>
                 </div>
               </div>
 
               {/* Booking CTAs */}
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div className="btn-group-responsive">
                 <button onClick={() => handleBookCustomPackage('salon')} className="btn btn-rose btn-sm" style={{ flex: 1 }}>
                   Book Salon
                 </button>
@@ -183,6 +186,20 @@ export const CustomPackageBuilder = ({ isEmbedded = false }) => {
           </div>
         </div>
       </div>
+
+      <style>{`
+        .custom-builder-summary-col {
+          position: sticky;
+          top: 90px;
+        }
+
+        @media (max-width: 768px) {
+          .custom-builder-summary-col {
+            position: static;
+            margin-top: 1rem;
+          }
+        }
+      `}</style>
     </div>
   );
 };

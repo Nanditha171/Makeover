@@ -32,13 +32,14 @@ export const PortfolioPage = () => {
           </p>
         </div>
 
-        {/* Filters */}
-        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+        {/* Filters Bar */}
+        <div className="no-scrollbar" style={{ display: 'flex', gap: '0.45rem', overflowX: 'auto', paddingBottom: '0.4rem', WebkitOverflowScrolling: 'touch', justifyContent: 'flex-start', flexWrap: 'nowrap', marginBottom: '2rem' }}>
           {filters.map(f => (
             <button
               key={f}
               onClick={() => setSelectedFilter(f)}
               className={`btn btn-sm ${selectedFilter === f ? 'btn-rose' : 'btn-outline-white'}`}
+              style={{ flexShrink: 0, fontSize: '0.8rem', padding: '0.4rem 0.85rem' }}
             >
               {f}
             </button>
@@ -77,22 +78,22 @@ export const PortfolioPage = () => {
                   <div style={{
                     position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
                     background: 'linear-gradient(0deg, rgba(45,28,36,0.92) 0%, rgba(45,28,36,0.3) 50%, transparent 100%)',
-                    display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.25rem'
+                    display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '1.15rem'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
                       <span className="badge badge-rose">{item.category}</span>
                       <span style={{ fontSize: '0.75rem', color: '#FCEBEF', fontWeight: '500' }}>{item.type}</span>
                     </div>
-                    <h3 style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '0.3rem' }}>{item.title}</h3>
-                    <p style={{ color: '#EADCE0', fontSize: '0.8rem', marginBottom: '0.75rem', lineHeight: 1.4 }}>
+                    <h3 style={{ fontSize: '1.15rem', color: '#fff', marginBottom: '0.25rem' }}>{item.title}</h3>
+                    <p style={{ color: '#EADCE0', fontSize: '0.78rem', marginBottom: '0.65rem', lineHeight: 1.4 }}>
                       {item.description}
                     </p>
 
-                    <div style={{ display: 'flex', gap: '0.4rem' }} onClick={e => e.stopPropagation()}>
-                      <button onClick={() => openModal('lightbox', item)} className="btn btn-outline-white btn-sm" style={{ flex: 1, padding: '0.4rem' }}>
+                    <div className="btn-group-responsive" onClick={e => e.stopPropagation()}>
+                      <button onClick={() => openModal('lightbox', item)} className="btn btn-outline-white btn-sm" style={{ flex: 1, padding: '0.35rem', minHeight: '34px', fontSize: '0.78rem' }}>
                         <Eye size={13} /> View Look
                       </button>
-                      <button onClick={() => startBooking(item, 'salon')} className="btn btn-rose btn-sm" style={{ flex: 1, padding: '0.4rem' }}>
+                      <button onClick={() => startBooking(item, 'salon')} className="btn btn-rose btn-sm" style={{ flex: 1, padding: '0.35rem', minHeight: '34px', fontSize: '0.78rem' }}>
                         <Sparkles size={13} /> Book Look
                       </button>
                     </div>

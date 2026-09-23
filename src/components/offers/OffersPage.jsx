@@ -34,34 +34,34 @@ export const OffersPage = () => {
             </button>
           </div>
         ) : (
-          <div className="grid-3" style={{ gap: '1.75rem' }}>
+          <div className="grid-3">
             {offers.map(off => (
               <div key={off.id} className="glass-card" style={{
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                justify: 'space-between',
+                justifyContent: 'space-between',
                 borderColor: 'var(--border-rose)'
               }}>
                 <div>
                   <div style={{ height: '180px', position: 'relative', overflow: 'hidden' }}>
                     <img src={off.image} alt={off.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <span className="badge badge-rose" style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', fontSize: '0.8rem', background: 'var(--rose-gradient)', color: '#FFFFFF', border: 'none' }}>
+                    <span className="badge badge-rose" style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', fontSize: '0.78rem', background: 'var(--rose-gradient)', color: '#FFFFFF', border: 'none' }}>
                       SAVE {formatPrice(off.savings)}
                     </span>
                   </div>
 
-                  <div style={{ padding: '1.5rem' }}>
+                  <div style={{ padding: '1.25rem' }}>
                     <span className="badge badge-rose" style={{ marginBottom: '0.5rem' }}>{off.category}</span>
-                    <h3 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '0.4rem' }}>{off.title}</h3>
-                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1.15rem', lineHeight: 1.5 }}>
+                    <h3 style={{ fontSize: '1.18rem', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>{off.title}</h3>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1rem', lineHeight: 1.5 }}>
                       {off.description}
                     </p>
 
-                    <div style={{ background: 'rgba(212,106,134,0.06)', padding: '0.75rem 0.9rem', borderRadius: '8px', border: '1px dashed var(--border-rose)', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ background: 'rgba(212,106,134,0.06)', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1px dashed var(--border-rose)', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.4rem' }}>
                       <div>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Promo Code:</span>
-                        <div style={{ fontWeight: '700', color: 'var(--primary-rose-dark)', letterSpacing: '0.04em', fontSize: '0.95rem' }}>{off.code}</div>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Promo Code:</span>
+                        <div style={{ fontWeight: '700', color: 'var(--primary-rose-dark)', letterSpacing: '0.04em', fontSize: '0.92rem' }}>{off.code}</div>
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'right' }}>
                         <Clock size={12} style={{ display: 'inline', marginRight: '0.2rem' }} />
@@ -70,17 +70,17 @@ export const OffersPage = () => {
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
-                      <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', fontSize: '0.95rem' }}>
+                      <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                         {formatPrice(off.regularPrice)}
                       </span>
-                      <span style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--primary-rose-dark)' }}>
+                      <span style={{ fontSize: '1.3rem', fontWeight: '800', color: 'var(--primary-rose-dark)' }}>
                         {formatPrice(off.offerPrice)}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div style={{ padding: '0 1.5rem 1.5rem 1.5rem' }}>
+                <div style={{ padding: '0 1.25rem 1.25rem 1.25rem' }}>
                   <button
                     onClick={() => startBooking({
                       id: off.id,
@@ -88,7 +88,7 @@ export const OffersPage = () => {
                       price: off.offerPrice
                     }, 'salon')}
                     className="btn btn-rose btn-sm"
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', minHeight: '42px' }}
                   >
                     <Sparkles size={15} /> Book Offer Now
                   </button>

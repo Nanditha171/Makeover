@@ -32,13 +32,11 @@ export const AdminTopNav = ({ searchQuery, setSearchQuery, onToggleDrawer }) => 
   return (
     <header className="admin-top-nav">
       {/* Left: Mobile Toggle & Search */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <button
           onClick={onToggleDrawer}
-          className="btn btn-sm"
-          style={{ display: 'none', padding: '0.4rem', border: '1px solid #EEDDE2', borderRadius: '8px' }}
-          id="mobile-drawer-toggle"
-          aria-label="Toggle navigation menu"
+          className="admin-mobile-toggle-btn"
+          aria-label="Toggle admin sidebar navigation"
         >
           <Menu size={20} color="var(--text-primary)" />
         </button>
@@ -77,7 +75,7 @@ export const AdminTopNav = ({ searchQuery, setSearchQuery, onToggleDrawer }) => 
                 position: 'absolute',
                 top: '48px',
                 right: '0',
-                width: '320px',
+                width: 'min(320px, 90vw)',
                 background: '#FFFFFF',
                 borderRadius: '14px',
                 boxShadow: '0 12px 32px rgba(45, 28, 36, 0.15)',
@@ -128,7 +126,7 @@ export const AdminTopNav = ({ searchQuery, setSearchQuery, onToggleDrawer }) => 
         {/* Super Admin Pill Badge */}
         <div className="admin-role-pill">
           <UserCheck size={14} />
-          <span>Super Admin</span>
+          <span className="admin-role-text">Super Admin</span>
         </div>
 
         {/* Admin Profile Avatar & Dropdown */}
@@ -153,7 +151,7 @@ export const AdminTopNav = ({ searchQuery, setSearchQuery, onToggleDrawer }) => 
                 position: 'absolute',
                 top: '52px',
                 right: '0',
-                width: '220px',
+                width: 'min(220px, 90vw)',
                 background: '#FFFFFF',
                 borderRadius: '12px',
                 boxShadow: '0 10px 28px rgba(45, 28, 36, 0.12)',

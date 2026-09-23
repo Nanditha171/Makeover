@@ -35,61 +35,61 @@ export const BookingConfirmationModal = () => {
 
   return (
     <div className="modal-overlay" onClick={closeModal}>
-      <div className="modal-container" style={{ maxWidth: '580px' }} onClick={e => e.stopPropagation()}>
+      <div className="modal-container" style={{ maxWidth: '560px' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header" style={{ background: 'var(--rose-gradient)', color: '#FFFFFF' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <CheckCircle2 size={22} style={{ color: '#FFFFFF' }} />
-            <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#FFFFFF' }}>Booking Confirmed!</h3>
+            <h3 style={{ fontSize: '1.18rem', fontWeight: '700', color: '#FFFFFF' }}>Booking Confirmed!</h3>
           </div>
-          <button onClick={closeModal} style={{ color: '#FFFFFF' }} aria-label="Close modal">
+          <button onClick={closeModal} style={{ color: '#FFFFFF', padding: '0.4rem' }} aria-label="Close modal">
             <X size={20} />
           </button>
         </div>
 
         <div className="modal-body">
-          <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
-            <div className="badge badge-rose" style={{ fontSize: '0.82rem', padding: '0.35rem 0.9rem', marginBottom: '0.5rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '1.15rem' }}>
+            <div className="badge badge-rose" style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem', marginBottom: '0.4rem' }}>
               Booking Reference: #{booking.id}
             </div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.86rem' }}>
               Your appointment has been reserved. A confirmation has been logged to your account.
             </p>
           </div>
 
           {/* Booking Summary Box */}
-          <div className="glass-card" style={{ padding: '1.25rem', marginBottom: '1.25rem', borderColor: 'var(--border-rose)', background: 'var(--bg-secondary)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.65rem', marginBottom: '0.65rem' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Service / Package:</span>
-              <strong style={{ color: 'var(--primary-rose-dark)' }}>{booking.serviceName}</strong>
+          <div className="glass-card" style={{ padding: '1.15rem', marginBottom: '1.15rem', borderColor: 'var(--border-rose)', background: 'var(--bg-secondary)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', marginBottom: '0.65rem', gap: '0.5rem' }}>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Service / Package:</span>
+              <strong style={{ color: 'var(--primary-rose-dark)', fontSize: '0.92rem', textAlign: 'right' }}>{booking.serviceName}</strong>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
+            <div className="form-row-2" style={{ gap: '0.5rem', fontSize: '0.86rem', marginBottom: '0.65rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Calendar size={15} style={{ color: 'var(--primary-rose-dark)' }} />
+                <Calendar size={14} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
                 <span>Date: <strong>{booking.date}</strong></span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Clock size={15} style={{ color: 'var(--primary-rose-dark)' }} />
+                <Clock size={14} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
                 <span>Time: <strong>{booking.timeSlot}</strong></span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <User size={15} style={{ color: 'var(--primary-rose-dark)' }} />
+                <User size={14} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
                 <span>Client: <strong>{booking.customerName}</strong></span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <MapPin size={15} style={{ color: 'var(--primary-rose-dark)' }} />
+                <MapPin size={14} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
                 <span>Type: <strong>{booking.type === 'home' ? 'Home Service' : 'Studio'}</strong></span>
               </div>
             </div>
 
             {booking.type === 'home' && booking.address && (
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', background: '#FFFFFF', padding: '0.5rem 0.75rem', borderRadius: '6px', marginBottom: '0.75rem', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', background: '#FFFFFF', padding: '0.5rem 0.75rem', borderRadius: '6px', marginBottom: '0.65rem', border: '1px solid var(--border-subtle)', wordBreak: 'break-word' }}>
                 <strong>Address:</strong> {booking.address} {booking.landmark ? `(${booking.landmark})` : ''}
               </div>
             )}
 
             {/* Financial Breakdown */}
-            <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.65rem', fontSize: '0.88rem' }}>
+            <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.55rem', fontSize: '0.86rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Total Amount:</span>
                 <span>{formatPrice(booking.totalPrice)}</span>
@@ -98,7 +98,7 @@ export const BookingConfirmationModal = () => {
                 <span>Advance Paid:</span>
                 <span>- {formatPrice(booking.advancePaid)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700', fontSize: '1rem', color: 'var(--primary-rose-dark)', paddingTop: '0.4rem', borderTop: '1px dashed var(--border-rose)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700', fontSize: '0.98rem', color: 'var(--primary-rose-dark)', paddingTop: '0.35rem', borderTop: '1px dashed var(--border-rose)' }}>
                 <span>Balance Due at Appointment:</span>
                 <span>{formatPrice(booking.remainingAmount)}</span>
               </div>
@@ -107,7 +107,7 @@ export const BookingConfirmationModal = () => {
 
           {/* Action Buttons */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-            <div style={{ display: 'flex', gap: '0.65rem' }}>
+            <div className="btn-group-responsive">
               <a
                 href={generateGoogleCalendarUrl()}
                 target="_blank"
@@ -126,7 +126,7 @@ export const BookingConfirmationModal = () => {
               </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.65rem' }}>
+            <div className="btn-group-responsive">
               <button onClick={handlePrint} className="btn btn-outline-white btn-sm" style={{ flex: 1 }}>
                 <Download size={15} /> Print Receipt
               </button>

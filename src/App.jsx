@@ -90,20 +90,7 @@ const MainContent = () => {
 
       {/* Floating Success Toast */}
       {toastMessage && (
-        <div className="glass-card" style={{
-          position: 'fixed',
-          top: '75px',
-          right: '20px',
-          zIndex: 2000,
-          padding: '0.75rem 1.3rem',
-          fontSize: '0.9rem',
-          fontWeight: '600',
-          boxShadow: 'var(--shadow-md)',
-          border: '1px solid var(--primary-rose)',
-          color: 'var(--text-primary)',
-          background: '#FFFFFF',
-          animation: 'fadeIn 0.25s ease-out'
-        }}>
+        <div className="toast-floating glass-card">
           ✨ {toastMessage}
         </div>
       )}

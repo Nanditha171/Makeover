@@ -55,34 +55,34 @@ export const ContactPage = () => {
         </div>
 
         {/* Location Card & Inquiry Form Grid */}
-        <div className="grid-2" style={{ gap: '2.5rem', marginBottom: '3.5rem', alignItems: 'flex-start' }}>
+        <div className="grid-2" style={{ marginBottom: '3rem', alignItems: 'flex-start' }}>
           {/* Studio Location Card */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div className="glass-card" style={{ padding: '1.75rem', border: '1px solid var(--border-rose)' }}>
+            <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid var(--border-rose)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
                 <div style={{
                   width: '38px', height: '38px', borderRadius: '50%',
                   background: 'rgba(212, 106, 134, 0.12)', color: 'var(--primary-rose-dark)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
                 }}>
                   <MapPin size={20} />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}>Studio Location</h3>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--primary-rose-dark)', fontWeight: '600' }}>Jubilee Hills, Hyderabad</span>
+                  <h3 style={{ fontSize: '1.18rem', color: 'var(--text-primary)' }}>Studio Location</h3>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--primary-rose-dark)', fontWeight: '600' }}>Jubilee Hills, Hyderabad</span>
                 </div>
               </div>
 
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1.25rem', lineHeight: 1.6 }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.15rem', lineHeight: 1.6 }}>
                 {salonInfo.address}
               </p>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', padding: '0.75rem 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.86rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', padding: '0.65rem 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <Clock size={16} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} />
                 <span><strong>Open Daily:</strong> {salonInfo.hours}</span>
               </div>
 
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <div className="btn-group-responsive">
                 <a href={salonInfo.googleMapsUrl} target="_blank" rel="noreferrer" className="btn btn-rose btn-sm" style={{ flex: 1 }}>
                   <MapPin size={14} /> Get Directions
                 </a>
@@ -93,20 +93,20 @@ export const ContactPage = () => {
             </div>
 
             {/* Quick Consultation Note */}
-            <div className="glass-card" style={{ padding: '1.25rem 1.5rem', background: 'var(--bg-secondary)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', color: 'var(--primary-rose-dark)', fontWeight: '700', fontSize: '0.9rem' }}>
+            <div className="glass-card" style={{ padding: '1.25rem', background: 'var(--bg-secondary)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', color: 'var(--primary-rose-dark)', fontWeight: '700', fontSize: '0.88rem' }}>
                 <Sparkles size={15} /> Personalized Bridal Consultations
               </div>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                 We recommend booking bridal appointments at least 2 to 4 months in advance during peak wedding seasons. Studio trials can be scheduled via our booking wizard.
               </p>
             </div>
           </div>
 
           {/* Customer Enquiry Form */}
-          <div className="glass-card" style={{ padding: '1.75rem', border: '1px solid var(--border-subtle)' }}>
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.35rem', color: 'var(--text-primary)' }}>Send an Inquiry</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+          <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid var(--border-subtle)' }}>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.35rem', color: 'var(--text-primary)' }}>Send an Inquiry</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.84rem', marginBottom: '1.15rem' }}>
               Have custom event requirements or need a tailored package quote? Send us your requirements.
             </p>
 
@@ -123,7 +123,7 @@ export const ContactPage = () => {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+              <div className="form-row-2">
                 <div className="form-group">
                   <label className="form-label">Contact Number</label>
                   <input
@@ -147,7 +147,7 @@ export const ContactPage = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+              <div className="form-row-2">
                 <div className="form-group">
                   <label className="form-label">Service Interested In</label>
                   <select
@@ -197,7 +197,7 @@ export const ContactPage = () => {
                 />
               </div>
 
-              <button type="submit" disabled={isSubmitting} className="btn btn-rose btn-sm" style={{ width: '100%', padding: '0.8rem' }}>
+              <button type="submit" disabled={isSubmitting} className="btn btn-rose btn-sm" style={{ width: '100%', padding: '0.8rem', minHeight: '44px' }}>
                 <Send size={15} /> {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
               </button>
             </form>
@@ -219,19 +219,19 @@ export const ContactPage = () => {
                   key={item.key}
                   className="glass-card"
                   style={{
-                    padding: '1.15rem 1.35rem',
+                    padding: '1.1rem 1.25rem',
                     cursor: 'pointer',
                     borderColor: isOpen ? 'var(--primary-rose)' : 'var(--border-subtle)'
                   }}
                   onClick={() => setOpenPolicy(isOpen ? null : item.key)}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h4 style={{ fontSize: '0.98rem', color: 'var(--text-primary)' }}>{item.title}</h4>
-                    {isOpen ? <ChevronUp size={18} style={{ color: 'var(--primary-rose-dark)' }} /> : <ChevronDown size={18} style={{ color: 'var(--text-muted)' }} />}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
+                    <h4 style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{item.title}</h4>
+                    {isOpen ? <ChevronUp size={18} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0 }} /> : <ChevronDown size={18} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />}
                   </div>
 
                   {isOpen && (
-                    <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: 1.6 }}>
+                    <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)', color: 'var(--text-secondary)', fontSize: '0.86rem', lineHeight: 1.6 }}>
                       {item.text}
                     </div>
                   )}

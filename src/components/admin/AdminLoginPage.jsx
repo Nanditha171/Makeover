@@ -42,43 +42,44 @@ export const AdminLoginPage = () => {
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: '75vh',
-      background: 'var(--bg-main)'
+      background: 'var(--bg-main)',
+      padding: '2rem var(--container-padding)'
     }}>
       <div className="glass-card" style={{
-        maxWidth: '460px',
+        maxWidth: '450px',
         width: '100%',
-        padding: '2.75rem 2.25rem',
+        padding: 'clamp(1.5rem, 5vw, 2.5rem) clamp(1.25rem, 4vw, 2rem)',
         border: '1px solid var(--border-rose)',
         background: '#FFFFFF',
         borderRadius: 'var(--radius-lg)',
         boxShadow: '0 8px 32px rgba(212, 106, 134, 0.12)'
       }}>
         {/* Header Icon & Title */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div style={{
-            width: '56px',
-            height: '56px',
+            width: '52px',
+            height: '52px',
             borderRadius: '50%',
             background: 'var(--rose-gradient)',
             color: '#FFFFFF',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 1rem auto',
+            margin: '0 auto 0.85rem auto',
             boxShadow: '0 6px 18px rgba(212,106,134,0.35)'
           }}>
-            <ShieldCheck size={28} />
+            <ShieldCheck size={26} />
           </div>
 
           <h2 style={{
-            fontSize: '1.75rem',
+            fontSize: 'clamp(1.4rem, 3.5vw, 1.75rem)',
             color: 'var(--text-primary)',
-            marginBottom: '0.4rem',
+            marginBottom: '0.35rem',
             fontFamily: 'var(--font-heading)'
           }}>
             Admin Portal Login
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.5' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: '1.5' }}>
             Authentication is required. Enter authorized admin credentials to access the studio management dashboard.
           </p>
         </div>
@@ -89,13 +90,13 @@ export const AdminLoginPage = () => {
             background: 'rgba(235, 87, 87, 0.08)',
             border: '1px solid rgba(235, 87, 87, 0.35)',
             color: '#C53030',
-            padding: '0.85rem 1rem',
+            padding: '0.75rem 0.9rem',
             borderRadius: 'var(--radius-sm)',
-            fontSize: '0.88rem',
-            marginBottom: '1.5rem',
+            fontSize: '0.86rem',
+            marginBottom: '1.25rem',
             display: 'flex',
             alignItems: 'flex-start',
-            gap: '0.6rem',
+            gap: '0.5rem',
             animation: 'fadeIn 0.2s ease-out'
           }}>
             <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '0.1rem' }} />
@@ -108,8 +109,8 @@ export const AdminLoginPage = () => {
 
         {/* Login Form */}
         <form onSubmit={handleSubmit}>
-          <div className="form-group" style={{ marginBottom: '1.25rem' }}>
-            <label className="form-label" htmlFor="admin-username" style={{ fontWeight: '600', fontSize: '0.88rem' }}>
+          <div className="form-group" style={{ marginBottom: '1.15rem' }}>
+            <label className="form-label" htmlFor="admin-username" style={{ fontWeight: '600', fontSize: '0.86rem' }}>
               Admin Username / Email *
             </label>
             <div style={{ position: 'relative' }}>
@@ -131,7 +132,6 @@ export const AdminLoginPage = () => {
                 className="form-control"
                 style={{
                   paddingLeft: '2.6rem',
-                  fontSize: '0.92rem',
                   borderColor: displayedError ? '#EB5757' : 'var(--border-rose)'
                 }}
                 placeholder="Enter admin username"
@@ -144,9 +144,9 @@ export const AdminLoginPage = () => {
             </div>
           </div>
 
-          <div className="form-group" style={{ marginBottom: '1.75rem' }}>
+          <div className="form-group" style={{ marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-              <label className="form-label" htmlFor="admin-password" style={{ fontWeight: '600', fontSize: '0.88rem', marginBottom: 0 }}>
+              <label className="form-label" htmlFor="admin-password" style={{ fontWeight: '600', fontSize: '0.86rem', marginBottom: 0 }}>
                 Admin Password *
               </label>
             </div>
@@ -170,7 +170,6 @@ export const AdminLoginPage = () => {
                 style={{
                   paddingLeft: '2.6rem',
                   paddingRight: '2.8rem',
-                  fontSize: '0.92rem',
                   borderColor: displayedError ? '#EB5757' : 'var(--border-rose)'
                 }}
                 placeholder="Enter password"
@@ -192,7 +191,7 @@ export const AdminLoginPage = () => {
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  padding: '0.3rem'
+                  padding: '0.4rem'
                 }}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
@@ -208,13 +207,14 @@ export const AdminLoginPage = () => {
             style={{
               width: '100%',
               padding: '0.85rem',
-              fontSize: '1rem',
+              fontSize: '0.98rem',
               fontWeight: '600',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.5rem',
-              boxShadow: '0 4px 14px rgba(212,106,134,0.3)'
+              boxShadow: '0 4px 14px rgba(212,106,134,0.3)',
+              minHeight: '46px'
             }}
           >
             {isSubmitting ? 'Verifying Credentials...' : 'Sign In to Admin Portal'}
@@ -224,8 +224,8 @@ export const AdminLoginPage = () => {
 
         {/* Back to Client Website link */}
         <div style={{
-          marginTop: '1.75rem',
-          paddingTop: '1.25rem',
+          marginTop: '1.5rem',
+          paddingTop: '1.15rem',
           borderTop: '1px solid var(--border-subtle)',
           textAlign: 'center'
         }}>
@@ -236,12 +236,13 @@ export const AdminLoginPage = () => {
               background: 'none',
               border: 'none',
               color: 'var(--text-secondary)',
-              fontSize: '0.85rem',
+              fontSize: '0.84rem',
               fontWeight: '500',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.4rem',
+              padding: '0.3rem',
               transition: 'color 0.2s'
             }}
             onMouseEnter={e => e.currentTarget.style.color = 'var(--primary-rose-dark)'}

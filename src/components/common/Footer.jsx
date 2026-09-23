@@ -20,7 +20,7 @@ export const Footer = () => {
       color: 'var(--text-secondary)'
     }}>
       <div className="container">
-        <div className="grid-4" style={{ marginBottom: '2.5rem', gap: '2rem' }}>
+        <div className="grid-4" style={{ marginBottom: '2.5rem' }}>
           {/* Brand Info */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.85rem' }}>
@@ -33,7 +33,7 @@ export const Footer = () => {
                 AURA BEAUTY
               </span>
             </div>
-            <p style={{ fontSize: '0.88rem', marginBottom: '1.25rem', lineHeight: 1.5, color: 'var(--text-secondary)' }}>
+            <p style={{ fontSize: '0.88rem', marginBottom: '1.15rem', lineHeight: 1.5, color: 'var(--text-secondary)' }}>
               Hyderabad’s luxury makeup studio and doorstep vanity service specializing in Bridal HD & Airbrush Makeovers.
             </p>
             <div style={{ display: 'flex', gap: '0.6rem' }}>
@@ -45,19 +45,19 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1rem' }}>Studio Links</h4>
+            <h4 style={{ color: 'var(--text-primary)', marginBottom: '0.85rem', fontSize: '1rem' }}>Studio Links</h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.88rem' }}>
-              <li><button onClick={() => handleNav('services')} style={{ color: 'inherit' }}>Services & Rates</button></li>
-              <li><button onClick={() => handleNav('portfolio')} style={{ color: 'inherit' }}>Makeup Portfolio</button></li>
-              <li><button onClick={() => handleNav('offers')} style={{ color: 'inherit' }}>Promotional Offers</button></li>
-              <li><button onClick={() => handleNav('about')} style={{ color: 'inherit' }}>About Artist & Studio</button></li>
-              <li><button onClick={() => handleNav('my-account')} style={{ color: 'inherit' }}>My Bookings</button></li>
+              <li><button onClick={() => handleNav('services')} style={{ color: 'inherit', padding: '0.2rem 0' }}>Services & Rates</button></li>
+              <li><button onClick={() => handleNav('portfolio')} style={{ color: 'inherit', padding: '0.2rem 0' }}>Makeup Portfolio</button></li>
+              <li><button onClick={() => handleNav('offers')} style={{ color: 'inherit', padding: '0.2rem 0' }}>Promotional Offers</button></li>
+              <li><button onClick={() => handleNav('about')} style={{ color: 'inherit', padding: '0.2rem 0' }}>About Artist & Studio</button></li>
+              <li><button onClick={() => handleNav('my-account')} style={{ color: 'inherit', padding: '0.2rem 0' }}>My Bookings</button></li>
             </ul>
           </div>
 
           {/* Business Hours */}
           <div>
-            <h4 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1rem' }}>Studio Hours</h4>
+            <h4 style={{ color: 'var(--text-primary)', marginBottom: '0.85rem', fontSize: '1rem' }}>Studio Hours</h4>
             <div style={{ display: 'flex', gap: '0.6rem', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
               <Clock size={16} style={{ color: 'var(--primary-rose-dark)', flexShrink: 0, marginTop: '0.2rem' }} />
               <div>
@@ -72,16 +72,16 @@ export const Footer = () => {
 
           {/* Location & Appointment */}
           <div>
-            <h4 style={{ color: 'var(--text-primary)', marginBottom: '1rem', fontSize: '1rem' }}>Location</h4>
+            <h4 style={{ color: 'var(--text-primary)', marginBottom: '0.85rem', fontSize: '1rem' }}>Location</h4>
             <div style={{ display: 'flex', gap: '0.6rem', fontSize: '0.88rem', marginBottom: '1rem' }}>
               <MapPin size={16} style={{ color: 'var(--primary-rose)', flexShrink: 0, marginTop: '0.2rem' }} />
               <span>{salonInfo.address}</span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <button onClick={() => startBooking(null, 'salon')} className="btn btn-rose btn-sm" style={{ width: '100%' }}>
+            <div className="btn-group-responsive">
+              <button onClick={() => startBooking(null, 'salon')} className="btn btn-rose btn-sm" style={{ flex: 1 }}>
                 Book Salon Slot
               </button>
-              <button onClick={() => startBooking(null, 'home')} className="btn btn-outline-white btn-sm" style={{ width: '100%' }}>
+              <button onClick={() => startBooking(null, 'home')} className="btn btn-outline-white btn-sm" style={{ flex: 1 }}>
                 Book Home Service
               </button>
             </div>
@@ -96,7 +96,7 @@ export const Footer = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '1rem',
+          gap: '0.75rem',
           fontSize: '0.8rem'
         }}>
           <div>

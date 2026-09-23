@@ -115,34 +115,34 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
         </div>
 
         {/* Location Type Selector Switch */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2.5rem' }}>
+        <div className="booking-mode-grid" style={{ marginBottom: '2rem' }}>
           <button
             type="button"
             onClick={() => { setBookingMode('salon'); setBookingType('salon'); }}
             className="glass-card"
             style={{
-              padding: '1.25rem',
+              padding: '1.15rem',
               textAlign: 'left',
               display: 'flex',
               alignItems: 'center',
-              gap: '1rem',
+              gap: '0.85rem',
               borderColor: bookingMode === 'salon' ? 'var(--primary-rose)' : 'var(--border-subtle)',
               background: bookingMode === 'salon' ? 'rgba(212,106,134,0.08)' : 'var(--bg-card)'
             }}
           >
             <div style={{
-              width: '42px', height: '42px', borderRadius: '50%',
+              width: '40px', height: '40px', borderRadius: '50%',
               background: bookingMode === 'salon' ? 'var(--rose-gradient)' : 'rgba(212,106,134,0.1)',
               color: bookingMode === 'salon' ? '#FFFFFF' : 'var(--text-secondary)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
             }}>
-              <Building2 size={22} />
+              <Building2 size={20} />
             </div>
             <div>
-              <div style={{ fontWeight: '700', fontSize: '1.05rem', color: bookingMode === 'salon' ? 'var(--primary-rose-dark)' : 'var(--text-primary)' }}>
+              <div style={{ fontWeight: '700', fontSize: '1rem', color: bookingMode === 'salon' ? 'var(--primary-rose-dark)' : 'var(--text-primary)' }}>
                 At Salon Studio
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                 Plot 42, Jubilee Hills Studio
               </div>
             </div>
@@ -153,40 +153,40 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
             onClick={() => { setBookingMode('home'); setBookingType('home'); }}
             className="glass-card"
             style={{
-              padding: '1.25rem',
+              padding: '1.15rem',
               textAlign: 'left',
               display: 'flex',
               alignItems: 'center',
-              gap: '1rem',
+              gap: '0.85rem',
               borderColor: bookingMode === 'home' ? 'var(--primary-rose)' : 'var(--border-subtle)',
               background: bookingMode === 'home' ? 'rgba(212,106,134,0.08)' : 'var(--bg-card)'
             }}
           >
             <div style={{
-              width: '42px', height: '42px', borderRadius: '50%',
+              width: '40px', height: '40px', borderRadius: '50%',
               background: bookingMode === 'home' ? 'var(--rose-gradient)' : 'rgba(212,106,134,0.1)',
               color: bookingMode === 'home' ? '#FFFFFF' : 'var(--text-secondary)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
             }}>
-              <Home size={22} />
+              <Home size={20} />
             </div>
             <div>
-              <div style={{ fontWeight: '700', fontSize: '1.05rem', color: bookingMode === 'home' ? 'var(--primary-rose-dark)' : 'var(--text-primary)' }}>
-                Doorstep Home & Venue Service
+              <div style={{ fontWeight: '700', fontSize: '1rem', color: bookingMode === 'home' ? 'var(--primary-rose-dark)' : 'var(--text-primary)' }}>
+                Doorstep Venue Service
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                Certified artist visits with vanity setup (+₹500)
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                Certified artist vanity setup (+₹500)
               </div>
             </div>
           </button>
         </div>
 
-        <form onSubmit={handleProceedToPayment} className="grid-2" style={{ gap: '2.5rem', alignItems: 'flex-start' }}>
+        <form onSubmit={handleProceedToPayment} className="grid-2" style={{ alignItems: 'flex-start' }}>
           {/* Left Column: Booking Form Steps */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {/* Step 1: Service Selection */}
-            <div className="glass-card" style={{ padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '1rem' }}>
+            <div className="glass-card" style={{ padding: '1.35rem' }}>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.85rem' }}>
                 1. Select Treatment / Package
               </h3>
 
@@ -233,12 +233,12 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
             </div>
 
             {/* Step 2: Date & Available Time Slot */}
-            <div className="glass-card" style={{ padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '1rem' }}>
+            <div className="glass-card" style={{ padding: '1.35rem' }}>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.85rem' }}>
                 2. Pick Date & Available Time Slot
               </h3>
 
-              <div className="form-group" style={{ marginBottom: '1.25rem' }}>
+              <div className="form-group" style={{ marginBottom: '1.15rem' }}>
                 <label className="form-label">Appointment Date</label>
                 <input
                   type="date"
@@ -254,8 +254,8 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
 
               {/* Time Slots Grid */}
               <div>
-                <label className="form-label" style={{ marginBottom: '0.6rem' }}>Available Time Slots for {selectedDate}</label>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+                <label className="form-label" style={{ marginBottom: '0.5rem' }}>Available Time Slots for {selectedDate}</label>
+                <div className="time-slots-grid">
                   {availableTimeSlots.map(slot => {
                     const status = checkSlotStatus(selectedDate, slot);
                     const isSelected = selectedTimeSlot === slot;
@@ -268,7 +268,7 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
                         disabled={isDisabled}
                         onClick={() => setSelectedTimeSlot(slot)}
                         style={{
-                          padding: '0.65rem 0.4rem',
+                          padding: '0.6rem 0.35rem',
                           borderRadius: 'var(--radius-sm)',
                           border: isSelected ? '2px solid var(--primary-rose)' : '1px solid var(--border-subtle)',
                           background: isSelected ? 'rgba(212,106,134,0.14)' : isDisabled ? 'rgba(0,0,0,0.03)' : '#FFFFFF',
@@ -279,10 +279,12 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
                           alignItems: 'center',
                           gap: '0.2rem',
                           opacity: isDisabled ? 0.4 : 1,
-                          fontWeight: isSelected ? '700' : '500'
+                          fontWeight: isSelected ? '700' : '500',
+                          minHeight: '44px',
+                          justifyContent: 'center'
                         }}
                       >
-                        <span style={{ fontSize: '0.84rem' }}>{slot}</span>
+                        <span style={{ fontSize: '0.82rem', whiteSpace: 'nowrap' }}>{slot}</span>
                         <span style={{ fontSize: '0.65rem', color: isDisabled ? '#e74c3c' : '#2ecc71', fontWeight: '700' }}>
                           {status === 'available' ? 'Available' : 'Booked'}
                         </span>
@@ -294,12 +296,12 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
             </div>
 
             {/* Step 3: Customer Details & Address */}
-            <div className="glass-card" style={{ padding: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', marginBottom: '1rem' }}>
+            <div className="glass-card" style={{ padding: '1.35rem' }}>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.85rem' }}>
                 3. Customer Contact Details
               </h3>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
+              <div className="form-row-2">
                 <div className="form-group">
                   <label className="form-label">Full Name *</label>
                   <input
@@ -377,33 +379,33 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
           </div>
 
           {/* Right Column: Price Summary Card */}
-          <div style={{ position: 'sticky', top: '90px' }}>
-            <div className="glass-card" style={{ padding: '1.75rem', border: '1px solid var(--border-rose)' }}>
-              <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem', color: 'var(--text-primary)' }}>Booking Summary</h3>
+          <div className="booking-summary-column">
+            <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid var(--border-rose)' }}>
+              <h3 style={{ fontSize: '1.25rem', marginBottom: '0.85rem', color: 'var(--text-primary)' }}>Booking Summary</h3>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.88rem', marginBottom: '1.25rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.85rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.88rem', marginBottom: '1.15rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.85rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Location:</span>
-                  <span style={{ fontWeight: '600', color: 'var(--primary-rose-dark)' }}>
+                  <span style={{ fontWeight: '600', color: 'var(--primary-rose-dark)', textAlign: 'right' }}>
                     {bookingMode === 'home' ? 'Doorstep Home Service' : 'Jubilee Hills Studio'}
                   </span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Service:</span>
-                  <strong style={{ color: 'var(--text-primary)' }}>{selectedItem?.name}</strong>
+                  <strong style={{ color: 'var(--text-primary)', textAlign: 'right' }}>{selectedItem?.name}</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem' }}>
                   <span style={{ color: 'var(--text-muted)' }}>People:</span>
                   <span>{guestsCount} Person(s)</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Date & Time:</span>
-                  <span>{selectedDate} ({selectedTimeSlot || 'Slot not selected'})</span>
+                  <span style={{ textAlign: 'right' }}>{selectedDate} ({selectedTimeSlot || 'Not picked'})</span>
                 </div>
               </div>
 
               {/* Price Calculation */}
-              <div style={{ borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.85rem', marginBottom: '1.25rem' }}>
+              <div style={{ borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.85rem', marginBottom: '1.15rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem', fontSize: '0.9rem' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Service Cost:</span>
                   <span>{formatPrice(baseServicePrice)}</span>
@@ -431,18 +433,51 @@ export const SalonBookingWizard = ({ initialMode = 'salon' }) => {
               <button
                 type="submit"
                 className="btn btn-rose"
-                style={{ width: '100%', padding: '0.85rem', fontSize: '1rem' }}
+                style={{ width: '100%', padding: '0.85rem', fontSize: '0.98rem' }}
               >
-                Proceed to Pay Advance {formatPrice(advanceDeposit)} <ArrowRight size={16} />
+                Pay Advance {formatPrice(advanceDeposit)} & Confirm <ArrowRight size={16} />
               </button>
 
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.85rem' }}>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.75rem', lineHeight: 1.4 }}>
                 🔒 100% Secure reservation. Slot is locked immediately upon advance confirmation.
               </p>
             </div>
           </div>
         </form>
       </div>
+
+      <style>{`
+        .booking-mode-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+        }
+        .time-slots-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.5rem;
+        }
+        .booking-summary-column {
+          position: sticky;
+          top: 90px;
+        }
+
+        @media (max-width: 768px) {
+          .booking-mode-grid {
+            grid-template-columns: 1fr;
+          }
+          .booking-summary-column {
+            position: static;
+            margin-top: 1rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .time-slots-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+      `}</style>
     </div>
   );
 };

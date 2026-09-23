@@ -41,24 +41,24 @@ export const ServicesPage = () => {
         </div>
 
         {/* Section Switcher Tabs */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.65rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
           <button
             onClick={() => setActiveSection('services')}
-            className={`btn ${activeSection === 'services' ? 'btn-rose' : 'btn-outline-white'}`}
+            className={`btn btn-sm ${activeSection === 'services' ? 'btn-rose' : 'btn-outline-white'}`}
           >
-            <SlidersHorizontal size={16} /> Individual Services ({services.length})
+            <SlidersHorizontal size={15} /> Individual Services ({services.length})
           </button>
           <button
             onClick={() => setActiveSection('packages')}
-            className={`btn ${activeSection === 'packages' ? 'btn-rose' : 'btn-outline-white'}`}
+            className={`btn btn-sm ${activeSection === 'packages' ? 'btn-rose' : 'btn-outline-white'}`}
           >
-            <Package size={16} /> Bridal Packages ({packages.length})
+            <Package size={15} /> Bridal Packages ({packages.length})
           </button>
           <button
             onClick={() => setActiveSection('custom-builder')}
-            className={`btn ${activeSection === 'custom-builder' ? 'btn-rose' : 'btn-outline-white'}`}
+            className={`btn btn-sm ${activeSection === 'custom-builder' ? 'btn-rose' : 'btn-outline-white'}`}
           >
-            <Wand2 size={16} /> Custom Package Builder
+            <Wand2 size={15} /> Custom Package Builder
           </button>
         </div>
 
@@ -66,14 +66,15 @@ export const ServicesPage = () => {
         {activeSection === 'services' && (
           <div>
             {/* Search & Category Filter Bar */}
-            <div style={{ marginBottom: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {/* Category Tabs */}
-              <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.4rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <div className="no-scrollbar" style={{ display: 'flex', gap: '0.45rem', overflowX: 'auto', paddingBottom: '0.35rem', WebkitOverflowScrolling: 'touch', justifyContent: 'flex-start', flexWrap: 'nowrap' }}>
                 {categories.map(cat => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
                     className={`btn btn-sm ${selectedCategory === cat ? 'btn-rose' : 'btn-outline-white'}`}
+                    style={{ flexShrink: 0, fontSize: '0.8rem', padding: '0.4rem 0.85rem' }}
                   >
                     {cat}
                   </button>
@@ -114,22 +115,22 @@ export const ServicesPage = () => {
             ) : (
               <div className="grid-3">
                 {filteredServices.map(srv => (
-                  <div key={srv.id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div key={srv.id} className="glass-card" style={{ padding: '1.35rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.65rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.65rem' }}>
                         <span className="badge badge-rose">{srv.category}</span>
-                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem', flexShrink: 0 }}>
                           <Clock size={13} /> {srv.duration}
                         </span>
                       </div>
 
-                      <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>{srv.name}</h3>
-                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', marginBottom: '0.9rem', lineHeight: 1.5 }}>
+                      <h3 style={{ fontSize: '1.18rem', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>{srv.name}</h3>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '0.85rem', lineHeight: 1.5 }}>
                         {srv.description}
                       </p>
 
                       {srv.inclusions && srv.inclusions.length > 0 && (
-                        <div style={{ marginBottom: '1.25rem', fontSize: '0.82rem' }}>
+                        <div style={{ marginBottom: '1.15rem', fontSize: '0.82rem' }}>
                           <strong style={{ color: 'var(--primary-rose-dark)', display: 'block', marginBottom: '0.35rem' }}>Includes:</strong>
                           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                             {srv.inclusions.map((inc, idx) => (
@@ -143,7 +144,7 @@ export const ServicesPage = () => {
                       )}
                     </div>
 
-                    <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem', marginTop: '0.5rem' }}>
+                    <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.85rem', marginTop: '0.5rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                         <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Price</span>
                         <span style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--primary-rose-dark)' }}>
@@ -151,7 +152,7 @@ export const ServicesPage = () => {
                         </span>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div className="btn-group-responsive">
                         <button onClick={() => startBooking(srv, 'salon')} className="btn btn-rose btn-sm" style={{ flex: 1 }}>
                           Book Salon
                         </button>
