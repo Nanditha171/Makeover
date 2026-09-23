@@ -1,6 +1,7 @@
 // src/firebase/config.js
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 
 /**
  * Firebase Configuration Object
@@ -29,6 +30,18 @@ const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication
 export const auth = getAuth(app);
+
+// Initialize Firebase Analytics if supported in this environment
+let analytics = null;
+if (typeof window !== 'undefined' && firebaseConfig.measurementId) {
+  isSupported().then(yes => {
+    if (yes) {
+      analytics = getAnalytics(app);
+    }
+  }).catch(() => {});
+}
+
+export { analytics };
 
 // Google Auth Provider for social login
 export const googleProvider = new GoogleAuthProvider();
