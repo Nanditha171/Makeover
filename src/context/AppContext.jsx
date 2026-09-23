@@ -249,6 +249,10 @@ export const AppProvider = ({ children }) => {
     return res;
   };
 
+  const registerCustomer = async (email, password, displayName) => {
+    return await registerNewClient({ fullName: displayName, email, phone: '', password });
+  };
+
   const loginCustomerWithGoogle = async () => {
     const res = await loginWithGoogle();
     if (res.success && res.user) {
