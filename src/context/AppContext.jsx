@@ -151,8 +151,19 @@ export const AppProvider = ({ children }) => {
   // Register New Client
   const registerNewClient = async ({ fullName, email, phone, password }) => {
     try {
+      const cleanEmail = email.trim().toLowerCase();
+
+      // Check if user already exists in local DB
+      const existing = await getUserProfile(cleanEmail);
+      if (existing && existing.isVerified) {
+        return {
+          success: false,
+          error: 'An account with this email address already exists. Please sign in instead.'
+        };
+      }
+
       // 1. Register with Firebase Auth
-      const authResult = await registerWithEmail(email, password, fullName);
+      const authResult = await registerWithEmail(cleanEmail, password, fullName.trim());
       if (!authResult.success) {
         return { success: false, error: authResult.error };
       }
@@ -160,9 +171,9 @@ export const AppProvider = ({ children }) => {
       // 2. Create User Profile with isVerified: false until OTP check
       const newProfile = {
         uid: authResult.user.uid || `user_${Date.now()}`,
-        fullName,
-        email,
-        phone,
+        fullName: fullName.trim(),
+        email: cleanEmail,
+        phone: phone.trim(),
         createdAt: new Date().toISOString(),
         isVerified: false,
         authProvider: 'email',
@@ -182,13 +193,14 @@ export const AppProvider = ({ children }) => {
 
   // Verify OTP & Grant Access
   const verifyClientOTP = async (identifier, enteredOTP) => {
-    const result = verifyEnteredOTP(identifier, enteredOTP);
+    const cleanId = (identifier || '').trim().toLowerCase();
+    const result = verifyEnteredOTP(cleanId, enteredOTP);
     if (!result.success) {
       return result;
     }
 
     // Mark user verified in DB
-    const verifiedUser = await markUserAsVerified(identifier);
+    const verifiedUser = await markUserAsVerified(cleanId);
     if (verifiedUser) {
       setCustomerUser(verifiedUser);
       setPendingVerificationUser(null);
@@ -219,30 +231,55 @@ export const AppProvider = ({ children }) => {
   };
 
   const loginCustomer = async (email, password) => {
-    const res = await loginWithEmail(email, password);
-    if (res.success && res.user) {
-      const profile = await getUserProfile(res.user.uid || email);
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const existingProfile = await getUserProfile(cleanEmail);
+
+    const res = await loginWithEmail(cleanEmail, password);
+    if (!res.success) {
+      if (res.errorCode === 'auth/invalid-credential' || res.errorCode === 'auth/user-not-found') {
+        if (!existingProfile) {
+          return {
+            success: false,
+            error: 'No account found with this email address. Please click "Register Now" to create an account.'
+          };
+        } else {
+          return {
+            success: false,
+            error: 'Incorrect email or password. Please verify your credentials or reset password.'
+          };
+        }
+      }
+      return { success: false, error: res.error };
+    }
+
+    // Firebase login succeeded
+    if (res.user) {
+      let profile = existingProfile || (await getUserProfile(res.user.uid));
       if (profile) {
-        if (profile.isVerified) {
+        if (!profile.isVerified) {
+          setPendingVerificationUser(profile);
+          return { success: true, user: profile, isUnverified: true };
+        } else {
+          profile.lastLoginAt = new Date().toISOString();
+          await saveUserProfile(profile);
           setCustomerUser(profile);
           localStorage.setItem('aura_verified_customer_session', JSON.stringify(profile));
           showToast(`Welcome back, ${profile.fullName || profile.email}!`);
-          return { success: true, user: profile };
-        } else {
-          setPendingVerificationUser(profile);
           return { success: true, user: profile };
         }
       } else {
         const newProfile = await saveUserProfile({
           uid: res.user.uid,
-          fullName: res.user.displayName || email.split('@')[0],
-          email: res.user.email,
+          fullName: res.user.displayName || cleanEmail.split('@')[0],
+          email: res.user.email || cleanEmail,
           phone: '',
           isVerified: true,
-          authProvider: 'email'
+          authProvider: 'email',
+          status: 'Active'
         });
         setCustomerUser(newProfile);
         localStorage.setItem('aura_verified_customer_session', JSON.stringify(newProfile));
+        showToast(`Welcome back, ${newProfile.fullName}!`);
         return { success: true, user: newProfile };
       }
     }
@@ -255,13 +292,19 @@ export const AppProvider = ({ children }) => {
 
   const loginCustomerWithGoogle = async () => {
     const res = await loginWithGoogle();
-    if (res.success && res.user) {
-      let profile = await getUserProfile(res.user.uid || res.user.email);
+    if (!res.success) {
+      return res;
+    }
+
+    if (res.user) {
+      const cleanEmail = (res.user.email || '').toLowerCase();
+      let profile = (await getUserProfile(res.user.uid)) || (await getUserProfile(cleanEmail));
+
       if (!profile) {
         profile = await saveUserProfile({
           uid: res.user.uid,
-          fullName: res.user.displayName || 'Google User',
-          email: res.user.email,
+          fullName: res.user.displayName || cleanEmail.split('@')[0] || 'Google Client',
+          email: cleanEmail,
           phone: '',
           isVerified: true,
           authProvider: 'google',
@@ -269,9 +312,13 @@ export const AppProvider = ({ children }) => {
         });
       } else {
         profile.lastLoginAt = new Date().toISOString();
+        profile.authProvider = profile.authProvider ? `${profile.authProvider}, google` : 'google';
+        profile.isVerified = true;
         await saveUserProfile(profile);
       }
+
       setCustomerUser(profile);
+      setPendingVerificationUser(null);
       localStorage.setItem('aura_verified_customer_session', JSON.stringify(profile));
       refreshRegisteredClients();
       showToast(`Signed in as ${profile.fullName || profile.email}`);

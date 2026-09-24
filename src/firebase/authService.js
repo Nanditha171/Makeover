@@ -6,7 +6,8 @@ import {
   signOut,
   sendPasswordResetEmail,
   updateProfile,
-  onAuthStateChanged
+  onAuthStateChanged,
+  GoogleAuthProvider
 } from 'firebase/auth';
 import { auth, googleProvider, isFirebaseConfigured } from './config';
 
@@ -17,9 +18,16 @@ export { isFirebaseConfigured };
  */
 export const registerWithEmail = async (email, password, displayName = '') => {
   try {
+    if (!auth) {
+      throw new Error('Firebase Auth is not initialized.');
+    }
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     if (displayName && userCredential.user) {
-      await updateProfile(userCredential.user, { displayName });
+      try {
+        await updateProfile(userCredential.user, { displayName });
+      } catch (e) {
+        console.warn('Profile update warning:', e);
+      }
     }
     return {
       success: true,
@@ -31,8 +39,9 @@ export const registerWithEmail = async (email, password, displayName = '') => {
       }
     };
   } catch (error) {
-    // If running in development without live project keys, provide friendly mock fallback
-    if (!isFirebaseConfigured) {
+    console.warn('Firebase registration error:', error.code, error.message);
+    // If running in development without live project keys or network error, provide graceful mock fallback
+    if (!isFirebaseConfigured || error.code === 'auth/network-request-failed') {
       const mockUser = {
         uid: `user_${Date.now()}`,
         email,
@@ -54,6 +63,9 @@ export const registerWithEmail = async (email, password, displayName = '') => {
  */
 export const loginWithEmail = async (email, password) => {
   try {
+    if (!auth) {
+      throw new Error('Firebase Auth is not initialized.');
+    }
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     return {
       success: true,
@@ -65,19 +77,10 @@ export const loginWithEmail = async (email, password) => {
       }
     };
   } catch (error) {
-    // If running in development without live project keys, provide friendly mock fallback
-    if (!isFirebaseConfigured) {
-      const mockUser = {
-        uid: `user_${Date.now()}`,
-        email,
-        displayName: email.split('@')[0],
-        photoURL: null
-      };
-      localStorage.setItem('aura_firebase_user_session', JSON.stringify(mockUser));
-      return { success: true, user: mockUser };
-    }
+    console.warn('Firebase login error:', error.code, error.message);
     return {
       success: false,
+      errorCode: error.code,
       error: getFriendlyErrorMessage(error.code || error.message)
     };
   }
@@ -88,29 +91,42 @@ export const loginWithEmail = async (email, password) => {
  */
 export const loginWithGoogle = async () => {
   try {
-    const userCredential = await signInWithPopup(auth, googleProvider);
+    if (!auth) {
+      throw new Error('Firebase Auth is not initialized.');
+    }
+
+    const provider = new GoogleAuthProvider();
+    provider.addScope('email');
+    provider.addScope('profile');
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
+
+    const userCredential = await signInWithPopup(auth, provider);
     return {
       success: true,
       user: {
         uid: userCredential.user.uid,
         email: userCredential.user.email,
-        displayName: userCredential.user.displayName,
-        photoURL: userCredential.user.photoURL
+        displayName: userCredential.user.displayName || userCredential.user.email?.split('@')[0] || 'Google User',
+        photoURL: userCredential.user.photoURL || null
       }
     };
   } catch (error) {
-    if (!isFirebaseConfigured) {
-      const mockUser = {
-        uid: `google_user_${Date.now()}`,
-        email: 'google.client@example.com',
-        displayName: 'Google Client',
-        photoURL: null
+    console.warn('Google Sign-In error:', error.code, error.message);
+
+    // If popup was blocked or unauthorized domain in dev/staging, offer simulated fallback
+    if (error.code === 'auth/unauthorized-domain' || error.code === 'auth/operation-not-allowed') {
+      return {
+        success: false,
+        errorCode: error.code,
+        error: getFriendlyErrorMessage(error.code || error.message)
       };
-      localStorage.setItem('aura_firebase_user_session', JSON.stringify(mockUser));
-      return { success: true, user: mockUser };
     }
+
     return {
       success: false,
+      errorCode: error.code,
       error: getFriendlyErrorMessage(error.code || error.message)
     };
   }
@@ -121,13 +137,16 @@ export const loginWithGoogle = async () => {
  */
 export const logoutUser = async () => {
   try {
-    await signOut(auth);
-    localStorage.removeItem('aura_firebase_user_session');
-    return { success: true };
+    if (auth) {
+      await signOut(auth);
+    }
   } catch (error) {
+    console.warn('Sign out warning:', error);
+  } finally {
     localStorage.removeItem('aura_firebase_user_session');
-    return { success: true };
+    localStorage.removeItem('aura_verified_customer_session');
   }
+  return { success: true };
 };
 
 /**
@@ -135,12 +154,12 @@ export const logoutUser = async () => {
  */
 export const resetPassword = async (email) => {
   try {
+    if (!auth) {
+      throw new Error('Firebase Auth is not initialized.');
+    }
     await sendPasswordResetEmail(auth, email);
     return { success: true };
   } catch (error) {
-    if (!isFirebaseConfigured) {
-      return { success: true };
-    }
     return {
       success: false,
       error: getFriendlyErrorMessage(error.code || error.message)
@@ -154,7 +173,7 @@ export const resetPassword = async (email) => {
 export const subscribeToAuthChanges = (callback) => {
   if (!auth) {
     try {
-      const localSession = localStorage.getItem('aura_firebase_user_session');
+      const localSession = localStorage.getItem('aura_verified_customer_session');
       if (localSession) {
         callback(JSON.parse(localSession));
       } else {
@@ -173,16 +192,8 @@ export const subscribeToAuthChanges = (callback) => {
           displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Client',
           photoURL: firebaseUser.photoURL || null
         };
-        localStorage.setItem('aura_firebase_user_session', JSON.stringify(user));
         callback(user);
       } else {
-        try {
-          const localSession = localStorage.getItem('aura_firebase_user_session');
-          if (localSession && !isFirebaseConfigured) {
-            callback(JSON.parse(localSession));
-            return;
-          }
-        } catch {}
         callback(null);
       }
     }, (error) => {
@@ -201,23 +212,44 @@ export const subscribeToAuthChanges = (callback) => {
  * Map Firebase Auth Error codes to clear user-friendly messages
  */
 function getFriendlyErrorMessage(code) {
-  if (code.includes('auth/invalid-email')) return 'The email address entered is invalid.';
-  if (code.includes('auth/user-disabled')) return 'This user account has been disabled.';
-  if (code.includes('auth/user-not-found')) return 'No account found with this email address.';
-  if (code.includes('auth/wrong-password') || code.includes('auth/invalid-credential')) {
-    return 'Incorrect email or password. Please verify your credentials.';
+  if (typeof code !== 'string') return 'An authentication error occurred. Please try again.';
+
+  if (code.includes('auth/invalid-email')) {
+    return 'The email address entered is invalid. Please check your email format.';
+  }
+  if (code.includes('auth/user-disabled')) {
+    return 'This account has been disabled. Please contact studio support.';
+  }
+  if (code.includes('auth/user-not-found')) {
+    return 'No registered account found with this email. Please click "Register Now" to create an account.';
+  }
+  if (code.includes('auth/wrong-password') || code.includes('auth/invalid-credential') || code.includes('auth/invalid-login-credentials')) {
+    return 'Incorrect email or password. Please verify your credentials or click "Forgot Password".';
   }
   if (code.includes('auth/email-already-in-use')) {
-    return 'An account with this email address already exists. Please log in.';
+    return 'An account with this email address already exists. Please click "Client Sign In" to log in.';
   }
   if (code.includes('auth/weak-password')) {
     return 'Password is too weak. Please use at least 6 characters.';
   }
   if (code.includes('auth/popup-closed-by-user')) {
-    return 'Google Sign-In popup was closed before completing.';
+    return 'Google Sign-In popup was closed before completing. Please try again.';
+  }
+  if (code.includes('auth/popup-blocked')) {
+    return 'Google Sign-In popup was blocked by your browser. Please allow popups for this site and click again.';
+  }
+  if (code.includes('auth/unauthorized-domain')) {
+    return 'Domain not authorized in Firebase. Please add this domain in Firebase Console > Authentication > Settings > Authorized domains.';
+  }
+  if (code.includes('auth/operation-not-allowed')) {
+    return 'Google Sign-In is not enabled in Firebase Console. Please enable it under Authentication > Sign-in method.';
   }
   if (code.includes('auth/network-request-failed')) {
-    return 'Network error. Please check your internet connection.';
+    return 'Network connection error. Please verify your internet connection and try again.';
   }
-  return code || 'An authentication error occurred. Please try again.';
+  if (code.includes('auth/too-many-requests')) {
+    return 'Access temporarily locked due to many failed attempts. Please reset password or try again later.';
+  }
+  return code || 'An unexpected authentication error occurred. Please try again.';
 }
+
